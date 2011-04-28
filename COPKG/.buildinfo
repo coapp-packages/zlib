@@ -1,0 +1,54 @@
+/* target information */
+
+#product-info  {
+	product-name: "zlib";
+	version: "1.2.5";
+	original-source-location: "http://zlib.net/zlib125.zip";
+	original-source-website: "http://zlib.net";
+	license: "zlib license -- http://zlib.net/zlib_license.html";
+	packager: "garrett serack <garretts@microsoft.com>";
+}
+
+x86 {
+    compiler: vc10-x86;
+    
+    targets: { 
+		"contrib\vstudio\vc10\x86\MiniUnzipRelease\miniunz.exe",
+		"contrib\vstudio\vc10\x86\MiniZipRelease\minizip.exe",
+		"contrib\vstudio\vc10\x86\TestZlibDllRelease\testzlib.exe",
+		"contrib\vstudio\vc10\x86\TestZlibRelease\testzlib.exe",
+		"contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.dll",
+		"contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.lib",
+		"contrib\vstudio\vc10\x86\ZlibStatRelease\zlibstat.lib"
+	};
+	
+    build-command:@"
+		cd contrib\masmx86\
+		call bld_ml32.bat
+		msbuild /p:Platform=win32 /p:Configuration=Release contrib\vstudio\vc10\zlibvc.sln
+	";
+    
+    clean-command:"";
+};
+
+x64 {
+    compiler: vc10-x64;
+
+	targets: { 
+		"contrib\vstudio\vc10\x64\MiniUnzipRelease\miniunz.exe",
+		"contrib\vstudio\vc10\x64\MiniZipRelease\minizip.exe",
+		"contrib\vstudio\vc10\x64\TestZlibDllRelease\testzlib.exe",
+		"contrib\vstudio\vc10\x64\TestZlibRelease\testzlib.exe",
+		"contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.dll",
+		"contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.lib",
+		"contrib\vstudio\vc10\x64\ZlibStatRelease\zlibstat.lib"
+	};
+	
+    build-command:@"
+        cd contrib\masmx64\
+        call bld_ml64.bat
+        msbuild /p:Platform=x64 /p:Configuration=Release contrib\vstudio\vc10\zlibvc.sln
+    ";
+    clean-command:@"
+    ";
+};
