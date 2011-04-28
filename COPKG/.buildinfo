@@ -23,12 +23,19 @@ x86 {
 	};
 	
     build-command:@"
-		cd contrib\masmx86\
+		pushd contrib\masmx86\
 		call bld_ml32.bat
+        popd 
 		msbuild /p:Platform=win32 /p:Configuration=Release contrib\vstudio\vc10\zlibvc.sln
 	";
     
-    clean-command:"";
+    clean-command:@"
+       erase contrib\masmx86\inffas32.lst  > nul 2> nul
+       erase contrib\masmx86\inffas32.obj  > nul 2> nul
+       erase contrib\masmx86\match686.lst  > nul 2> nul
+       erase contrib\masmx86\match686.obj  > nul 2> nul
+       rmdir /s /q contrib\vstudio\vc10\x86  > nul 2> nul
+    ";
 };
 
 x64 {
@@ -36,7 +43,7 @@ x64 {
 
 	targets: { 
 		"contrib\vstudio\vc10\x64\MiniUnzipRelease\miniunz.exe",
-		"contrib\vstudio\vc10\x64\MiniZipRelease\minizip.exe",
+		"contrib\vstudio\vc10\x64\Release\minizip.exe",
 		"contrib\vstudio\vc10\x64\TestZlibDllRelease\testzlib.exe",
 		"contrib\vstudio\vc10\x64\TestZlibRelease\testzlib.exe",
 		"contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.dll",
@@ -45,10 +52,16 @@ x64 {
 	};
 	
     build-command:@"
-        cd contrib\masmx64\
+        pushd contrib\masmx64\
         call bld_ml64.bat
+        popd 
         msbuild /p:Platform=x64 /p:Configuration=Release contrib\vstudio\vc10\zlibvc.sln
     ";
     clean-command:@"
+       erase contrib\masmx64\inffasx64.lst  > nul 2> nul
+       erase contrib\masmx64\inffasx64.obj  > nul 2> nul
+       erase contrib\masmx64\gvmat64.lst  > nul 2> nul
+       erase contrib\masmx64\gvmat64.obj  > nul 2> nul
+       rmdir /s /q contrib\vstudio\vc10\x64  > nul 2> nul
     ";
 };
