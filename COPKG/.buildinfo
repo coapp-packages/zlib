@@ -9,6 +9,7 @@
 	packager: "garrett serack <garretts@microsoft.com>";
 }
 
+
 x86 {
     compiler: vc10-x86;
     
@@ -19,14 +20,38 @@ x86 {
 		"contrib\vstudio\vc10\x86\TestZlibRelease\testzlib.exe",
 		"contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.dll",
 		"contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.lib",
-		"contrib\vstudio\vc10\x86\ZlibStatRelease\zlibstat.lib"
+		"contrib\vstudio\vc10\x86\ZlibStatRelease\zlibstat.lib",
+		"Release\x86\zlib.lib",
+		"Release\x86\zlib1.lib",
+		"Release\x86\zlib1.exp",
+		"Release\x86\zlib1.dll"
 	};
 	
     build-command:@"
-		pushd contrib\masmx86\
-		call bld_ml32.bat
-        popd 
-		msbuild /p:Platform=win32 /p:Configuration=Release contrib\vstudio\vc10\zlibvc.sln
+         rem Do zlibwapi build...
+         pushd contrib\masmx86\
+             call bld_ml32.bat
+         popd 
+         msbuild /p:Platform=win32 /p:Configuration=Release contrib\vstudio\vc10\zlibvc.sln
+         
+         rem Do zlib1 build...
+         copy contrib\masmx86\inffas32.obj inffas32.obj
+         copy contrib\masmx86\match686.obj match686.obj
+         rem best you have your visual studio installed in the default location...
+         IF EXIST ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" x86
+         IF EXIST ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" x86
+
+         rem Makefile was modified to put output to temp dir, so we can have x86 and x64 builds at the same time
+         mkdir temp
+         rem lets clean out all the obj's first, otherwise we might accidentally link to another arch
+         nmake -f win32/Makefile.msc clean
+         nmake -f win32/Makefile.msc LOC=""-DASMV -DASMINF"" OBJA=""match686.obj inffas32.obj""
+         rem lets put our output here
+         mkdir Release\x86        
+         copy temp\zlib.lib Release\x86\zlib.lib
+         copy temp\zlib1.lib Release\x86\zlib1.lib
+         copy temp\zlib1.exp Release\x86\zlib1.exp
+         copy temp\zlib1.dll Release\x86\zlib1.dll
 	";
     
     clean-command:@"
@@ -34,7 +59,13 @@ x86 {
        erase contrib\masmx86\inffas32.obj  > nul 2> nul
        erase contrib\masmx86\match686.lst  > nul 2> nul
        erase contrib\masmx86\match686.obj  > nul 2> nul
-       rmdir /s /q contrib\vstudio\vc10\x86  > nul 2> nul
+       if exist contrib\vstudio\vc10\x86 rmdir /s /q contrib\vstudio\vc10\x86  > nul 2> nul
+       if exist temp rmdir /s /q temp > nul 2> nul
+       if exist Release rmdir /s /q Release > nul 2> nul
+       rem best you have your visual studio installed in the default location...
+       IF EXIST ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" x86
+       IF EXIST ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" x86
+       nmake -f win32/Makefile.msc clean   > nul 2> nul
     ";
 };
 
@@ -48,20 +79,53 @@ x64 {
 		"contrib\vstudio\vc10\x64\TestZlibRelease\testzlib.exe",
 		"contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.dll",
 		"contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.lib",
-		"contrib\vstudio\vc10\x64\ZlibStatRelease\zlibstat.lib"
+		"contrib\vstudio\vc10\x64\ZlibStatRelease\zlibstat.lib",
+		"Release\x64\zlib.lib",
+		"Release\x64\zlib1.lib",
+		"Release\x64\zlib1.exp",
+		"Release\x64\zlib1.dll"
 	};
 	
     build-command:@"
+        rem Do zlibwapi build...
         pushd contrib\masmx64\
         call bld_ml64.bat
         popd 
         msbuild /p:Platform=x64 /p:Configuration=Release contrib\vstudio\vc10\zlibvc.sln
+
+        rem Do zlib1 build...
+        copy contrib\masmx64\inffasx64.obj inffasx64.obj
+        copy contrib\masmx64\gvmat64.obj gvmat64.obj 
+        copy contrib\masmx64\inffas8664.c inffas8664.c
+        rem best you have your visual studio installed in the default location...
+        IF EXIST ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" amd64
+        IF EXIST ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" x86_amd64
+
+        mkdir temp
+        rem I couldn't get the makefile to do this bit properly without changing it somewhat, so Ill do it myself for now
+        rem lets clean out all the obj's first, otherwise we might accidentally link to another arch
+        nmake -f win32/Makefile.msc clean
+        cl -nologo -MD -W3 -O2 -Oy- -Zi -Fd""zlib"" -DASMV -DASMINF inffas8664.c
+        nmake -f win32/Makefile.msc AS=ml64 LOC=""-DASMV -DASMINF"" OBJA=""inffasx64.obj gvmat64.obj inffas8664.obj"" 
+        mkdir Release\x64
+        copy temp\zlib.lib Release\x64\zlib.lib
+        copy temp\zlib1.lib Release\x64\zlib1.lib
+        copy temp\zlib1.exp Release\x64\zlib1.exp
+        copy temp\zlib1.dll Release\x64\zlib1.dll
     ";
+
     clean-command:@"
        erase contrib\masmx64\inffasx64.lst  > nul 2> nul
        erase contrib\masmx64\inffasx64.obj  > nul 2> nul
        erase contrib\masmx64\gvmat64.lst  > nul 2> nul
        erase contrib\masmx64\gvmat64.obj  > nul 2> nul
-       rmdir /s /q contrib\vstudio\vc10\x64  > nul 2> nul
+       erase inffas8664.c  > nul 2> nul
+       if exist contrib\vstudio\vc10\x64 rmdir /s /q contrib\vstudio\vc10\x64  > nul 2> nul
+       if exist Release rmdir /s /q Release > nul 2> nul
+       if exist temp rmdir /s /q temp > nul 2> nul
+       rem best you have your visual studio installed in the default location...
+       IF EXIST ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" amd64
+       IF EXIST ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" call ""C:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"" x86_amd64
+       nmake -f win32/Makefile.msc clean  > nul 2> nul
     ";
 };
