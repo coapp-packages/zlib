@@ -11,7 +11,9 @@
 
 
 x86 {
-    compiler: vc10-x86;
+    compiler: vc10;
+
+    platform: x86;
     
     targets: { 
 		"contrib\vstudio\vc10\x86\MiniUnzipRelease\miniunz.exe",
@@ -70,7 +72,9 @@ x86 {
 };
 
 x64 {
-    compiler: vc10-x64;
+    compiler: vc10;
+
+    platform: x64;
 
 	targets: { 
 		"contrib\vstudio\vc10\x64\MiniUnzipRelease\miniunz.exe",
