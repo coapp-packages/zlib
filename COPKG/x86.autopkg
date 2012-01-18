@@ -1,0 +1,87 @@
+// details for x86 version of zlib package
+// build with: autopackage x86.autopkg zlib.autopkg  
+
+
+package { 
+    arch : x86;
+}
+
+files[exes] {
+    root: "..\contrib\vstudio\vc10\x86";
+    
+    include: {
+        "**\miniunz.exe",
+        "**\minizip.exe",
+    };
+    
+    trim-path: all;
+};
+
+files[dlls] {
+    include: {
+        release-dlls,
+        contrib-dlls
+    };
+    
+    trim-path: all;
+};
+
+files[libs] {
+    include: {
+        release-libs,
+        contrib-libs
+    };
+    
+    trim-path: all;
+};
+
+files[headers] {
+    root: "..\\";
+    include: {
+        "*.h"
+    };
+    
+    trim-path:all;
+}
+
+files[contrib-dlls] {
+    root: "..\contrib\vstudio\vc10\x86";
+    
+    include: {
+        "**\zlibwapi.dll",
+    };
+    
+    trim-path: all;
+};
+
+files[release-dlls] { 
+    root: "..\Release\x86";
+    
+    include: {
+        "**zlib1.dll",
+    };
+    
+    trim-path: all;
+}
+
+files[contrib-libs] {
+    root: "..\contrib\vstudio\vc10\x86";
+    
+    include: {
+        "**\zlibwapi.lib",
+        "**\zlibstat.lib",
+    };
+    
+    trim-path: all;
+};
+
+files[release-libs] { 
+    root: "..\Release\x86";
+    
+    include: {
+        "**zlib.lib",
+        "**zlib1.lib",
+    };
+    
+    trim-path: all;
+}
