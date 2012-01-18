@@ -9,10 +9,33 @@
 	packager: "garrett serack <garretts@microsoft.com>";
 }
 
+publish {
+    default : false;
+    uses : {
+        //release
+    };
+    
+    targets: { 
+        "copkg\zlib-x86.msi",
+     //   "copkg\zlib-x64.msi",
+    };
+    
+    build-command : @"
+        cd COPKG
+        autopackage x86.autopkg zlib.autopkg  
+    ";
+}
+
+release {
+    
+    uses : {
+        x86// , x64
+    };
+}
+
 
 x86 {
     compiler: vc10;
-
     platform: x86;
     
     targets: { 
