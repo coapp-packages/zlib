@@ -1,0 +1,42 @@
+@import "zlib-dev.inc" ;
+
+#define { 
+    flavor: "vc10"; 
+} 
+
+package { 
+    arch : x86;
+}
+
+files[contrib-libs] {
+    root: "..\contrib\vstudio\vc10\x86";
+    
+    include: {
+        "**\zlibwapi.lib",
+        "**\zlibstat.lib",
+    };
+    
+    trim-path: all;
+};
+
+files[release-libs] { 
+    root: "..\Release\x86";
+    
+    include: {
+        "**zlib.lib",
+        "**zlib1.lib",
+    };
+    
+    trim-path: all;
+}
+
+
+files[libs] {
+    include: {
+        release-libs,
+        contrib-libs
+    };
+    
+    trim-path: all;
+};
+

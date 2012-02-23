@@ -1,9 +1,8 @@
-#define {
-    package-version: "1.2.5.4";
-}
+@import "version.inc";
+@import "outercurve.inc";
 
 package {
-    name: "zlib";
+    name: "zlib[${flavor}]";
     version: "${package-version}";
     
     display-name: "ZLib compression library";
@@ -13,40 +12,17 @@ package {
     publisher: "CoApp Project";
 }
 
-/*
-requires {
-    package: foo-1.0.0.0-x86;
-}
-
-*/
-
-signing {
-    attributes : {
-        company="Outercurve Foundation",
-        description="${Package.PackageDetails.SummaryDescription}",
-        product-name="zlib",
-        product-version="${package-version}",
-        file-version="${package-version}",
-    };
-    
-    replace-signature: true; 
-    include: { 
-        dlls,
-        exes
-    };    
-}
-
-identity[CoApp Project] {
-    name : "CoApp Project, Outercurve Foundation";
-    email: "coapp@coapp.org";
-    website: "http://coapp.org";
-}
-
 
 license[zlib] {
     license-url: "http://zlib.net/zlib_license.html";
     license-type: "zlib";
-   
+}
+
+files[files-to-sign] {
+    include: { 
+        exes,
+        dlls
+    };    
 }
 
 provides {
@@ -65,7 +41,6 @@ metadata {
     licenses : {
         zlib
     };
-    
 }
 
 compatability-policy {
@@ -100,15 +75,6 @@ assembly[zlib] {
     };
 }
 
-developer-library[libs] {
-    libraries : {
-        libs
-    };
-    
-    headers: { 
-        headers
-    };
-}
 
 package-composition {
     symlinks : { 
@@ -116,3 +82,18 @@ package-composition {
     };
 }
 
+
+signing {
+    attributes : {
+        company="Outercurve Foundation",
+        description="${Package.PackageDetails.SummaryDescription}",
+        product-name="zlib",
+        product-version="${package-version}",
+        file-version="${package-version}",
+    };
+    
+    replace-signature: true; 
+    include: { 
+        files-to-sign
+    };    
+}
