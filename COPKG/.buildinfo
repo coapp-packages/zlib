@@ -12,7 +12,7 @@
 
 package {
     default : false;
-    // uses : sign;
+    uses : sign;
     
     targets: { 
         "copkg\zlib[vc10]-${package-version}-x86.msi",
@@ -84,7 +84,7 @@ debug {
     };
     
     uses : {
-        x86// , x64
+        x86 , x64
     };
 }
 
