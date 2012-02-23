@@ -4,6 +4,7 @@
 package {
     name: "zlib[${flavor}]";
     version: "${package-version}";
+    arch : "${arch}";
     
     display-name: "ZLib compression library";
     location: "http://coapp.org/repository/${OutputFilename}";
@@ -12,6 +13,28 @@ package {
     publisher: "CoApp Project";
 }
 
+files[exes] {
+    root: @"..\output\${arch}\release\bin";
+    
+    include: {
+        "miniunz.exe",
+        "minizip.exe",
+    };
+    
+    trim-path: all;
+};
+
+
+files[dlls] {
+    root: @"..\output\${arch}\release\bin";
+  
+    include: {
+        "zlibwapi.dll",
+        "zlib1.dll"
+    };
+    
+    trim-path: all;
+};
 
 license[zlib] {
     license-url: "http://zlib.net/zlib_license.html";
@@ -75,13 +98,11 @@ assembly[zlib] {
     };
 }
 
-
 package-composition {
     symlinks : { 
         exes => @"${bin}\${each.Name}" = @"${packagedir}\${each.Name}";
     };
 }
-
 
 signing {
     attributes : {

@@ -4,7 +4,8 @@
 package {
     name: "zlib-dev[${flavor}]";
     version: "${package-version}";
-    
+    arch : "${arch}";
+
     display-name: "ZLib compression developer library";
 }
 
@@ -21,6 +22,19 @@ metadata {
         zlib
     };
 }
+
+files[libs] {
+    root: @"..\output\${arch}\release\lib";
+    
+    include: {
+        "zlibwapi.lib",
+        "zlibstat.lib",
+        "zlib.lib",
+        "zlib1.lib",
+    };
+    
+    trim-path: all;
+};
 
 requires {
     package: "zlib-dev-common-${package-version}-any-${Package.PublicKeyToken}";

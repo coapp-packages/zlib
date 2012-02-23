@@ -12,24 +12,30 @@
 
 package {
     default : false;
-    uses : {
-        update-version, sign
-    };
+    // uses : sign;
     
     targets: { 
         "copkg\zlib[vc10]-${package-version}-x86.msi",
         "copkg\zlib-dev[vc10]-${package-version}-x86.msi",
         "copkg\zlib-dev-common-${package-version}-any.msi",
-        // "copkg\zlib[vc10]-${package-version}-x64.msi",
-        // "copkg\zlib-dev[vc10]-${package-version}-x64.msi"
+        "copkg\zlib[vc10]-${package-version}-x64.msi",
+        "copkg\zlib-dev[vc10]-${package-version}-x64.msi"
     };
     
     build-command : @"
+        REM THERE IS SOME GOOFY STUFF IN HERE TO WORK AROUND A COUPLE BUGS IN AUTOPACKAGE.
+        REM FIXES COMING SOON...
         cd COPKG
-        REM  autopackage zlib-dev-common.autopkg zlib[vc10]-x86.autopkg zlib-dev[vc10]-x86.autopkg zlib[vc10]-x64.autopkg zlib-dev[vc10]-x64.autopkg  || goto failed
-        REM autopackage zlib-dev-common.autopkg zlib[vc10]-x86.autopkg zlib-dev[vc10]-x86.autopkg || goto failed
-        
-        autopackage zlib-dev-common.autopkg zlib[vc10]-x86.autopkg
+        coapp add-feed %cd%\
+        coapp --force-scan list 
+        autopackage zlib-dev-common.autopkg || goto failed
+        coapp --force-scan list 
+        autopackage zlib[vc10]-x86.autopkg zlib-dev[vc10]-x86.autopkg || goto failed
+        coapp --force-scan list 
+        autopackage zlib[vc10]-x64.autopkg zlib-dev[vc10]-x64.autopkg || goto failed
+        coapp --force-scan list 
+        coapp remove-feed %cd%\
+        ptk update-version
     ";
 }
 
@@ -50,10 +56,13 @@ update-version {
 }
 
 sign {
+    default : false;
+
     uses : release;
 
     build-command : @"
         REM Sign binaries.
+        echo [Skipping binary signing -- autopackage will sign and manifest the binaries for us]
     ";
 }
 
@@ -63,11 +72,13 @@ release {
     };
     
     uses : {
-        x86// , x64
+        x86 , x64
     };
 }
 
 debug {
+    default : false;
+
     set: { 
         BUILD_CFG ="debug";
     };
@@ -79,6 +90,8 @@ debug {
 
 
 x86 {   
+    default : false;
+
     set: { 
         OUTPUT_ARCH="x86";
         OUTPUT_VERSION="${package-version}"; // this got picked up from the @import rule at the top.
@@ -90,17 +103,17 @@ x86 {
     uses : prep;
     
     targets: { 
-		"!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib",             
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\Release\x86\zlib1.lib",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll"
+		"output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib",             
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll"
 	};
 	
     build-command:@"
@@ -121,18 +134,18 @@ x86 {
         nmake -f win32/Makefile.msc LOC=""-DASMV -DASMINF"" OBJA=""match686.obj inffas32.obj"" || goto failed
 
         rem grab out outputs and put them in a consistent location.
-        copy temp\zlib.lib  !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib                  || goto failed
-        copy temp\zlib1.lib !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\Release\x86\zlib1.lib     || goto failed
-        copy temp\zlib1.exp !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp                 || goto failed
-        copy temp\zlib1.dll !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll                 || goto failed
+        copy temp\zlib.lib  output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib                  || goto failed
+        copy temp\zlib1.lib output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib                 || goto failed
+        copy temp\zlib1.exp output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp                 || goto failed
+        copy temp\zlib1.dll output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll                 || goto failed
 
-        copy contrib\vstudio\vc10\x86\MiniUnzipRelease\miniunz.exe     !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe    || goto failed 
-        copy contrib\vstudio\vc10\x86\MiniZipRelease\minizip.exe       !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe    || goto failed 
-        copy contrib\vstudio\vc10\x86\TestZlibDllRelease\testzlib.exe  !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe   || goto failed 
-        copy contrib\vstudio\vc10\x86\TestZlibRelease\testzlib.exe     !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe   || goto failed 
-        copy contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.dll      !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll   || goto failed 
-        copy contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.lib      !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib   || goto failed 
-        copy contrib\vstudio\vc10\x86\ZlibStatRelease\zlibstat.lib     !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib   || goto failed 
+        copy contrib\vstudio\vc10\x86\MiniUnzipRelease\miniunz.exe     output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe    || goto failed 
+        copy contrib\vstudio\vc10\x86\MiniZipRelease\minizip.exe       output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe    || goto failed 
+        copy contrib\vstudio\vc10\x86\TestZlibDllRelease\testzlib.exe  output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe   || goto failed 
+        copy contrib\vstudio\vc10\x86\TestZlibRelease\testzlib.exe     output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe   || goto failed 
+        copy contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.dll      output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll   || goto failed 
+        copy contrib\vstudio\vc10\x86\ZlibDllRelease\zlibwapi.lib      output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib   || goto failed 
+        copy contrib\vstudio\vc10\x86\ZlibStatRelease\zlibstat.lib     output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib   || goto failed 
 	";
     
     clean-command:@"
@@ -151,6 +164,8 @@ x86 {
 };
 
 x64 {
+    default : false;
+
     set: { 
         OUTPUT_ARCH="x64";
         OUTPUT_VERSION="${package-version}"; // this got picked up from the @import rule at the top.
@@ -159,18 +174,20 @@ x64 {
     compiler: vc10;
     platform: x64;
 
+    uses : prep;
+
 	targets: { 
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib",             
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\Release\x86\zlib1.lib",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp",
-        "!output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll"           
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib",             
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp",
+        "output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll"           
 	};
 	
     build-command:@"
@@ -197,18 +214,18 @@ x64 {
         nmake -f win32/Makefile.msc AS=ml64 LOC=""-DASMV -DASMINF"" OBJA=""inffasx64.obj gvmat64.obj inffas8664.obj"" 
 
         rem grab out outputs and put them in a consistent location.
-        copy temp\zlib.lib  !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib                  || goto failed
-        copy temp\zlib1.lib !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\Release\x86\zlib1.lib     || goto failed
-        copy temp\zlib1.exp !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp                 || goto failed
-        copy temp\zlib1.dll !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll                 || goto failed
+        copy temp\zlib.lib  output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib                  || goto failed
+        copy temp\zlib1.lib output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib                 || goto failed
+        copy temp\zlib1.exp output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp                 || goto failed
+        copy temp\zlib1.dll output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll                 || goto failed
         
-        copy contrib\vstudio\vc10\x64\MiniUnzipRelease\miniunz.exe      !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe    || goto failed 
-		copy contrib\vstudio\vc10\x64\Release\minizip.exe               !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe    || goto failed 
-		copy contrib\vstudio\vc10\x64\TestZlibDllRelease\testzlib.exe   !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe   || goto failed 
-		copy contrib\vstudio\vc10\x64\TestZlibRelease\testzlib.exe      !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe   || goto failed 
-		copy contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.dll,      !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll   || goto failed 
-		copy contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.lib       !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib   || goto failed 
-		copy contrib\vstudio\vc10\x64\ZlibStatRelease\zlibstat.lib      !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib   || goto failed 
+        copy contrib\vstudio\vc10\x64\MiniUnzipRelease\miniunz.exe      output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe    || goto failed 
+		copy contrib\vstudio\vc10\x64\Release\minizip.exe               output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe    || goto failed 
+		copy contrib\vstudio\vc10\x64\TestZlibDllRelease\testzlib.exe   output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe   || goto failed 
+		copy contrib\vstudio\vc10\x64\TestZlibRelease\testzlib.exe      output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe   || goto failed 
+		copy contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.dll,      output\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll   || goto failed 
+		copy contrib\vstudio\vc10\x64\ZlibDllRelease\zlibwapi.lib       output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib   || goto failed 
+		copy contrib\vstudio\vc10\x64\ZlibStatRelease\zlibstat.lib      output\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib   || goto failed 
     ";
 
     clean-command:@"
@@ -228,20 +245,22 @@ x64 {
 };
 
 prep {
+    default : false;
+
     build-command:@"
-        mkdir !output
-        mkdir !output\${OUTPUT_ARCH}
-        mkdir !output\${OUTPUT_ARCH}\${BUILD_CFG}
-        mkdir !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin
-        mkdir !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib
+        mkdir output
+        mkdir output\${OUTPUT_ARCH}
+        mkdir output\${OUTPUT_ARCH}\${BUILD_CFG}
+        mkdir output\${OUTPUT_ARCH}\${BUILD_CFG}\bin
+        mkdir output\${OUTPUT_ARCH}\${BUILD_CFG}\lib
     ";
     
     clean-command:@"
-        rmdir /s /q !output\${OUTPUT_ARCH}\${BUILD_CFG}\lib    > nul 2> nul
-        rmdir /s /q !output\${OUTPUT_ARCH}\${BUILD_CFG}\bin    > nul 2> nul
-        rmdir /s /q !output\${OUTPUT_ARCH}\${BUILD_CFG}        > nul 2> nul
-        rmdir /s /q !output\${OUTPUT_ARCH}                     > nul 2> nul
-        rmdir /s /q !output                                    > nul 2> nul
+        rmdir /s /q output\${OUTPUT_ARCH}\${BUILD_CFG}\lib    > nul 2> nul
+        rmdir /s /q output\${OUTPUT_ARCH}\${BUILD_CFG}\bin    > nul 2> nul
+        rmdir /s /q output\${OUTPUT_ARCH}\${BUILD_CFG}        > nul 2> nul
+        rmdir /s /q output\${OUTPUT_ARCH}                     > nul 2> nul
+        rmdir /s /q output                                    > nul 2> nul
     ";
 }
 

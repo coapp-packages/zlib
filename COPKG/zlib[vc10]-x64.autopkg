@@ -1,3 +1,8 @@
 // details for x64 version of zlib package
 // build with: autopackage x64.autopkg zlib.autopkg  
+@import "zlib.inc";
 
+#define { 
+    flavor: "vc10"; 
+    arch : "x64";
+}
