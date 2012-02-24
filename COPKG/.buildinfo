@@ -56,7 +56,7 @@ package {
         REM THERE IS SOME GOOFY STUFF IN HERE TO WORK AROUND A COUPLE BUGS IN AUTOPACKAGE.
         REM FIXES COMING SOON...
         cd COPKG
-        coapp add-feed ""%cd%\""
+        coapp add-feed ""%cd%""
         coapp --force-scan list 
         autopackage zlib-dev-common.autopkg || goto failed
         coapp --force-scan list 
@@ -64,7 +64,7 @@ package {
         coapp --force-scan list 
         autopackage zlib[vc10]-x64.autopkg zlib-dev[vc10]-x64.autopkg || goto failed
         coapp --force-scan list 
-        coapp remove-feed ""%cd%\""
+        coapp remove-feed ""%cd%""
         ptk update-version
     ";
 }
