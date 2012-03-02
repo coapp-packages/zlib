@@ -1,6 +1,11 @@
 @import "version.inc" ;
 @import "outercurve.inc" ;
 
+#define { 
+    flavor: "${flav??vc10}"; 
+    arch : "${arc??x86}";
+}
+
 package {
     name: "zlib-dev[${flavor}]";
     version: "${package-version}";
@@ -24,7 +29,7 @@ metadata {
 }
 
 files[libs] {
-    root: @"..\output\${arch}\release\lib";
+    root: @"..\output\${flavor}\${arch}\release\lib";
     
     include: {
         "zlibwapi.lib",

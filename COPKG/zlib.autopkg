@@ -1,6 +1,11 @@
 @import "version.inc";
 @import "outercurve.inc";
 
+#define { 
+    flavor: "${flav??vc10}"; 
+    arch : "${arc??x86}";
+}
+
 package {
     name: "zlib[${flavor}]";
     version: "${package-version}";
@@ -14,7 +19,7 @@ package {
 }
 
 files[exes] {
-    root: @"..\output\${arch}\release\bin";
+    root: @"..\output\${flavor}\${arch}\release\bin";
     
     include: {
         "miniunz.exe",
@@ -26,7 +31,7 @@ files[exes] {
 
 
 files[dlls] {
-    root: @"..\output\${arch}\release\bin";
+    root: @"..\output\${flavor}\${arch}\release\bin";
   
     include: {
         "zlibwapi.dll",
