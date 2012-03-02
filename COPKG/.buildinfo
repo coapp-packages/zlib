@@ -16,30 +16,46 @@ test {
 	uses : release;
 	
 	build-command : @"
-		set init_var=""This is a test...""
         for %%d in (${ALL_COMPILERS}) do (
-            pushd output\%%d\x86\release\bin\
-            example.exe	|| goto failed
-            example_d.exe	|| goto failed
-            for /F ""tokens=*"" %%a in ('echo %init% ^| minigzip ^| minigzip -d') do (set ans_var=%%a)
-            if %init_var% neq %ans_var% (goto failed)
-            for /F ""tokens=*"" %%a in ('echo %init% ^| minigzip_d ^| minigzip_d -d') do (set ans_var=%%a)
-            if %init_var% neq %ans_var% (goto failed)
-            testzlib.exe zlibwapi.dll || goto failed
-            testzlibstatic.exe zlibwapi.dll || goto failed
-            popd
-            
-            pushd output\%%d\x64\release\bin\
-            example.exe	|| goto failed
-            example_d.exe	|| goto failed
-            for /F ""tokens=*"" %%a in ('echo %init% ^| minigzip ^| minigzip -d') do (set ans_var=%%a)
-            if %init_var% neq %ans_var% (goto failed)
-            for /F ""tokens=*"" %%a in ('echo %init% ^| minigzip_d ^| minigzip_d -d') do (set ans_var=%%a)
-            if %init_var% neq %ans_var% (goto failed)
-            testzlib.exe zlibwapi.dll || goto failed
-            testzlibstatic.exe zlibwapi.dll || goto failed
-            popd
+            ptk --nologo --flavor=%%d test-loop
         )
+	";
+}
+
+test-loop {
+    set : flavor="${flavor??vc10}";
+	default : false;
+	
+	build-command : @"
+        setlocal enabledelayedexpansion
+		set init_var=""This is a test...""
+        set ans_var=init
+
+        pushd output\${flavor}\x86\release\bin\ || goto failed
+        example.exe	> nul 2> nul || goto failed
+        example_d.exe > nul 2> nul || goto failed
+        for /F ""tokens=*"" %%a in ('echo %init_var% ^| minigzip ^| minigzip -d') do (set ans_var=%%a)
+        if %init_var% neq %ans_var% (goto failed)
+        for /F ""tokens=*"" %%a in ('echo %init_var% ^| minigzip_d ^| minigzip_d -d') do (set ans_var=%%a)
+        if %init_var% neq %ans_var% (goto failed)
+        testzlib.exe zlibwapi.dll > nul 2> nul || goto failed
+        testzlibstatic.exe zlibwapi.dll > nul 2> nul || goto failed
+        popd
+        echo ${flavor}\x86 tests passed...
+        
+        pushd output\${flavor}\x64\release\bin\ || goto failed
+        example.exe	> nul 2> nul || goto failed
+        example_d.exe > nul 2> nul || goto failed
+        for /F ""tokens=*"" %%a in ('echo %init_var% ^| minigzip ^| minigzip -d') do (set ans_var=%%a)
+        if %init_var% neq %ans_var% (goto failed)
+        for /F ""tokens=*"" %%a in ('echo %init_var% ^| minigzip_d ^| minigzip_d -d') do (set ans_var=%%a)
+        if %init_var% neq %ans_var% (goto failed)
+        testzlib.exe zlibwapi.dll > nul 2> nul || goto failed
+        testzlibstatic.exe zlibwapi.dll > nul 2> nul || goto failed
+        popd
+        echo ${flavor}\x64 tests passed...
+        
+        endlocal
 	";
 }
 
@@ -166,7 +182,7 @@ x86 {
     targets: { 
 		@"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
-        @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
@@ -248,7 +264,7 @@ x64 {
 	targets: { 
 		@"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
-        @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
         @"output\${CO_COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
