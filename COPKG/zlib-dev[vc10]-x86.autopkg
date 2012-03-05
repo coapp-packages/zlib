@@ -1,8 +1,0 @@
-// details for x86 version of zlib package
-// build with: autopackage xlib-dev[vc10]-x86.autopkg
-@import "zlib-dev.inc" ;
-
-#define { 
-    flavor: "vc10"; 
-    arch : "x86";
-}

@@ -1,8 +1,0 @@
-// details for x64 version of zlib package
-// build with: autopackage xlib-dev[vc10]-x64.autopkg
-@import "zlib-dev.inc" ;
-
-#define { 
-    flavor: "vc10"; 
-    arch : "x64";
-}
