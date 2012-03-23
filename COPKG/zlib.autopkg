@@ -97,7 +97,7 @@ manifest[things-that-need-them] {
     };
 }
 
-assembly[zlib] {
+assembly[zlib[${flavor}]] {
     include : {
         dlls
     };

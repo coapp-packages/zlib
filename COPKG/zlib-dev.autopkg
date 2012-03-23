@@ -46,7 +46,7 @@ requires {
     package: "zlib[${flavor}]-${package-version}-${Package.Architecture}-${Package.PublicKeyToken}";
 }
 
-developer-library[zlib] {
+developer-library[zlib[${flavor}]] {
     libraries : {
         libs
     };
