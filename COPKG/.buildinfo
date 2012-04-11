@@ -14,11 +14,11 @@ test {
     set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
     set : PLAT="${PLAT??x86, x64}";
 	default : false;
-	uses : release;
 	
 	build-command : @"
+        if ""${BUILT}"" neq ""true"" ptk release --COMP=""${COMP}"" --PLAT=""${PLAT}""
         for %%a in (${COMP}) do (
-            for %%b in (${COMP}) do (
+            for %%b in (${PLAT}) do (
                 ptk --nologo --COMP=%%a --PLAT=%%b test-loop
             )
         )
@@ -52,37 +52,24 @@ test-loop {
 }
 
 package {
-    set : ALL_COMPILERS="${ALL_COMPILERS??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : PLAT="${PLAT??x86, x64}";
     default : false;
-    uses : sign;
     
     // In future versions of pTk, we hope to be able to make this list more concise and maliable.
     targets: { 
-        @"copkg\zlib[vc10]-${package-version}-x86.msi",
-        @"copkg\zlib-dev[vc10]-${package-version}-x86.msi",
-        @"copkg\zlib-dev-common-${package-version}-any.msi",
-        @"copkg\zlib[vc10]-${package-version}-x64.msi",
-        @"copkg\zlib-dev[vc10]-${package-version}-x64.msi",
-        @"copkg\zlib[vc9]-${package-version}-x86.msi",
-        @"copkg\zlib-dev[vc9]-${package-version}-x86.msi",
-        @"copkg\zlib[vc9]-${package-version}-x64.msi",
-        @"copkg\zlib-dev[vc9]-${package-version}-x64.msi"
     };
     
     build-command : @"
-        REM THERE IS SOME GOOFY STUFF IN HERE TO WORK AROUND A COUPLE BUGS IN AUTOPACKAGE.
-        REM FIXES COMING SOON...
+        if ""${BUILT}"" neq ""true"" ptk release --COMP=""${COMP}"" --PLAT=""${PLAT}""
+        
         cd COPKG
-        coapp add-feed ""%cd%""
-        coapp --force-scan list 
         autopackage zlib-dev-common.autopkg || goto failed
-        for %%A in (${ALL_COMPILERS}) do (
-            coapp --force-scan list 
-            autopackage --flav=%%A --arc=x86 zlib.autopkg zlib-dev.autopkg || goto failed
-            autopackage --flav=%%A --arc=x64 zlib.autopkg zlib-dev.autopkg || goto failed
+        for %%A in (${COMP}) do (
+            for %%B in (${PLAT}) do (
+                autopackage --flav=%%A --arc=%%B zlib.autopkg zlib-dev.autopkg || goto failed
+            )
         )
-        coapp --force-scan list 
-        coapp remove-feed ""%cd%""
         ptk update-version
     ";
 }
@@ -176,7 +163,7 @@ x86 {
     set: { 
         OUTPUT_ARCH="x86";
         OUTPUT_VERSION="${package-version}"; // this got picked up from the @import rule at the top.
-        CO_COMP="${COMP??vc10}";
+        COMP="${COMP??vc10}";
         BUILD_CFG="${BUILD_CFG??debug}";
     };
     
@@ -258,7 +245,7 @@ x64 {
     set: { 
         OUTPUT_ARCH="x64";
         OUTPUT_VERSION="${package-version}"; // this got picked up from the @import rule at the top.
-        CO_COMP="${COMP??vc10}";
+        COMP="${COMP??vc10}";
         BUILD_CFG="${BUILD_CFG??debug}";
     };
     
@@ -351,15 +338,6 @@ prep {
         mkdir output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}
         mkdir output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin
         mkdir output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib
-    ";
-    
-    clean-command:@"
-        rmdir /s /q output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib    > nul 2> nul
-        rmdir /s /q output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin    > nul 2> nul
-        rmdir /s /q output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}        > nul 2> nul
-        rmdir /s /q output\${COMP}\${OUTPUT_ARCH}                     > nul 2> nul
-        rmdir /s /q output\${COMP}                         > nul 2> nul
-        rmdir /s /q output                                    > nul 2> nul
     ";
 }
 
