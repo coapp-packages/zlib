@@ -1,9 +1,13 @@
 /* target information */
 @import "version.inc";
 
+#define {
+    NewVersion : "${package-version++}";
+}
+
 #product-info  {
 	product-name: "zlib";
-	version: "${package-version}";
+	version: "${NewVersion}";
 	original-source-location: "http://zlib.net/zlib125.zip";
 	original-source-website: "http://zlib.net";
 	license: "zlib license -- http://zlib.net/zlib_license.html";
@@ -63,14 +67,16 @@ package {
     build-command : @"
         if ""${BUILT}"" neq ""true"" ptk release --COMP=""${COMP}"" --PLAT=""${PLAT}""
         
-        cd COPKG
+        if ""${noversion}"" neq ""true"" ptk update-version
+        
+        pushd COPKG
         autopackage zlib-dev-common.autopkg || goto failed
         for %%A in (${COMP}) do (
             for %%B in (${PLAT}) do (
                 autopackage --flav=%%A --arc=%%B zlib.autopkg zlib-dev.autopkg || goto failed
             )
         )
-        ptk update-version
+        popd
     ";
 }
 
@@ -80,13 +86,11 @@ update-version {
     build-command : @"
         REM auto-increment version.inc file...
         
-        cd COPKG
+        pushd COPKG
         setlocal EnableDelayedExpansion
-        for /F ""tokens=4,5,6,7  delims=.; "" %%v in (version.inc) do (
-            set /a build=%%y + 1
-            set VERSTRING=#define { package-version: %%v.%%w.%%x.!build!; }
-        )
+        set VERSTRING=#define { package-version: ${NewVersion}; }
         echo !VERSTRING! > version.inc
+        popd
     ";
 }
 
@@ -162,7 +166,7 @@ x86 {
 
     set: { 
         OUTPUT_ARCH="x86";
-        OUTPUT_VERSION="${package-version}"; // this got picked up from the @import rule at the top.
+        OUTPUT_VERSION="${NewVersion}"; // this got picked up from the @import rule at the top.
         COMP="${COMP??vc10}";
         BUILD_CFG="${BUILD_CFG??debug}";
     };
@@ -244,7 +248,7 @@ x64 {
 
     set: { 
         OUTPUT_ARCH="x64";
-        OUTPUT_VERSION="${package-version}"; // this got picked up from the @import rule at the top.
+        OUTPUT_VERSION="${NewVersion}"; // this got picked up from the @import rule at the top.
         COMP="${COMP??vc10}";
         BUILD_CFG="${BUILD_CFG??debug}";
     };
