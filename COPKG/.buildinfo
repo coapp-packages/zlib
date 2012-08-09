@@ -15,7 +15,7 @@
 }
 
 test {
-    set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : COMP="${COMP??vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
     set : PLAT="${PLAT??x86, x64}";
 	default : false;
 	
@@ -56,7 +56,7 @@ test-loop {
 }
 
 package {
-    set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : COMP="${COMP??vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
     set : PLAT="${PLAT??x86, x64}";
     default : false;
     
@@ -108,7 +108,7 @@ sign {
 release {
     set: { 
         BUILD_CFG ="release";
-        COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+        COMP="${COMP??vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
         PLAT="${PLAT??x86, x64}";
     };
     
@@ -136,7 +136,7 @@ debug {
     default : false;
     set: { 
         BUILD_CFG ="debug";
-        COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+        COMP="${COMP??vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
         PLAT="${PLAT??x86, x64}";
     };
     
@@ -192,6 +192,9 @@ x86 {
 	};
 	
     build-command:@"
+        REM this makes it so that DLLs can have their own SxS Activation Context in an embedded resource.
+		echo %CL% | findstr ISOLATION_AWARE || set CL=%CL% /D ISOLATION_AWARE_ENABLED /U NOUSER 
+
 		REM This avoids problems of ambiguity later...
 		rem Do zlibwapi build...
         pushd contrib\masmx86\
@@ -274,6 +277,9 @@ x64 {
 	};
 	
     build-command:@"
+        REM this makes it so that DLLs can have their own SxS Activation Context in an embedded resource.
+		echo %CL% | findstr ISOLATION_AWARE || set CL=%CL% /D ISOLATION_AWARE_ENABLED /U NOUSER 
+
         REM This avoids problems of ambiguity later...
 		rem Do zlibwapi build...
         pushd contrib\masmx64\
