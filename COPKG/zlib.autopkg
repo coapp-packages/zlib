@@ -3,7 +3,7 @@
 @import "outercurve.inc";
 
 #define { 
-    flavor: "${flav??vc10}"; 
+    flavor: "${flav??vc11,vc10}"; 
     arch : "${arc??x86}";
 }
 
