@@ -4,14 +4,14 @@
 #product-info  {
 	product-name: "zlib";
 	version: "${package-version}";
-	original-source-location: "http://zlib.net/zlib125.zip";
+	original-source-location: "http://zlib.net/zlib127.zip";
 	original-source-website: "http://zlib.net";
 	license: "zlib license -- http://zlib.net/zlib_license.html";
-	packager: "garrett serack <garretts@microsoft.com>";
+	packager: "Ben Herila <ben@herila.net>, Garrett Serack <garretts@microsoft.com>";
 }
 
 test {
-    set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : COMP="${COMP??vc11, vc10}"; // suggested full list = "vc11, vc10, vc9, vc8, vc7.1, vc6, mingw";
     set : PLAT="${PLAT??x86, x64}";
 	default : false;
 	
@@ -42,7 +42,7 @@ test-loop {
         if %init_var% neq %ans_var% (goto failed)
         for /F ""tokens=*"" %%a in ('echo %init_var% ^| minigzip_d ^| minigzip_d -d') do (set ans_var=%%a)
         if %init_var% neq %ans_var% (goto failed)
-        testzlib.exe zlibwapi.dll > nul 2> nul || goto failed
+        testzlibdll.exe zlibwapi.dll > nul 2> nul || goto failed
         testzlibstatic.exe zlibwapi.dll > nul 2> nul || goto failed
         popd
         echo ${COMP}\${PLAT} tests passed...
@@ -52,7 +52,7 @@ test-loop {
 }
 
 package {
-    set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : COMP="${COMP??vc11, vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
     set : PLAT="${PLAT??x86, x64}";
     default : false;
     
@@ -104,7 +104,7 @@ sign {
 release {
     set: { 
         BUILD_CFG ="release";
-        COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+        COMP="${COMP??vc11, vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
         PLAT="${PLAT??x86, x64}";
     };
     
@@ -132,7 +132,7 @@ debug {
     default : false;
     set: { 
         BUILD_CFG ="debug";
-        COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+        COMP="${COMP??vc11,vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
         PLAT="${PLAT??x86, x64}";
     };
     
@@ -177,13 +177,13 @@ x86 {
 		@"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe",
-        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibdll.exe",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib",             
-        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib",
-        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp",
+        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.lib",
+        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.exp",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll"
 	};
 	
@@ -193,6 +193,7 @@ x86 {
         pushd contrib\masmx86\
             call bld_ml32.bat
         popd 
+		echo on
 		msbuild /p:Platform=win32 /p:Configuration=${BUILD_CFG} contrib\vstudio\${COMP}\zlibvc.sln || goto failed
 
         rem Do zlib1 build...
@@ -206,22 +207,24 @@ x86 {
         nmake -f win32/Makefile.msc LOC=""-DASMV -DASMINF"" OBJA=""match686.obj inffas32.obj"" || goto failed
 
         rem grab out outputs and put them in a consistent location.
-        copy temp\zlib.lib  output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib                  || goto failed
-        copy temp\zlib1.lib output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib                 || goto failed
-        copy temp\zlib1.exp output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp                 || goto failed
-        copy temp\zlib1.dll output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll                 || goto failed
+		del /Q output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\*
+		del /Q output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\*
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib           zlib.lib      || goto failed
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.lib           zdll.lib      || goto failed
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.exp           zdll.exp      || goto failed
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll          zlib1.dll     || goto failed
 
-        copy contrib\vstudio\${COMP}\x86\MiniUnzip%BUILD_CFG%\miniunz.exe     output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe    || goto failed 
-        copy contrib\vstudio\${COMP}\x86\MiniZip%BUILD_CFG%\minizip.exe       output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe    || goto failed 
-        copy contrib\vstudio\${COMP}\x86\TestZlibDll%BUILD_CFG%\testzlib.exe  output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe   || goto failed 
-        copy contrib\vstudio\${COMP}\x86\TestZlib%BUILD_CFG%\testzlib.exe     output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe   || goto failed 
-        copy contrib\vstudio\${COMP}\x86\ZlibDll%BUILD_CFG%\zlibwapi.dll      output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll   || goto failed 
-        copy contrib\vstudio\${COMP}\x86\ZlibDll%BUILD_CFG%\zlibwapi.lib      output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib   || goto failed 
-        copy contrib\vstudio\${COMP}\x86\ZlibStat%BUILD_CFG%\zlibstat.lib     output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib   || goto failed 
-		copy example.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example.exe	|| goto failed 
-		copy minigzip.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip.exe	|| goto failed 
-		copy example_d.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example_d.exe	|| goto failed 
-		copy minigzip_d.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip_d.exe	|| goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe        contrib\vstudio\${COMP}\x86\MiniUnzip%BUILD_CFG%\miniunz.exe          || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe        contrib\vstudio\${COMP}\x86\MiniZip%BUILD_CFG%\minizip.exe            || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibdll.exe    contrib\vstudio\${COMP}\x86\TestZlibDll%BUILD_CFG%\testzlibdll.exe    || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe contrib\vstudio\${COMP}\x86\TestZlib%BUILD_CFG%\testzlib.exe          || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll       contrib\vstudio\${COMP}\x86\ZlibDll%BUILD_CFG%\zlibwapi.dll           || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib       contrib\vstudio\${COMP}\x86\ZlibDll%BUILD_CFG%\zlibwapi.lib           || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib       contrib\vstudio\${COMP}\x86\ZlibStat%BUILD_CFG%\zlibstat.lib          || goto failed 
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example.exe	    example.exe	                                                          || goto failed
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip.exe	    minigzip.exe	                                                      || goto failed
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example_d.exe	    example_d.exe	                                                      || goto failed
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip_d.exe	    minigzip_d.exe	                                                      || goto failed
 	";
     
     clean-command:@"
@@ -259,17 +262,18 @@ x64 {
 		@"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe",
-        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe",
+        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibdll.exe",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib",             
-        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib",
-        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp",
+        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.lib",
+        @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.exp",
         @"output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll"
 	};
 	
     build-command:@"
+		echo on
         REM This avoids problems of ambiguity later...
 		rem Do zlibwapi build...
         pushd contrib\masmx64\
@@ -294,22 +298,24 @@ x64 {
         nmake -f win32/Makefile.msc AS=ml64 LOC=""-DASMV -DASMINF"" OBJA=""inffasx64.obj gvmat64.obj inffas8664.obj"" 
 
         rem grab out outputs and put them in a consistent location.
-        copy temp\zlib.lib  output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib                  || goto failed
-        copy temp\zlib1.lib output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.lib                 || goto failed
-        copy temp\zlib1.exp output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib1.exp                 || goto failed
-        copy temp\zlib1.dll output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll                 || goto failed
+		del /Q output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\*
+		del /Q output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\*
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlib.lib           zlib.lib      || goto failed
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.lib           zdll.lib      || goto failed
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zdll.exp           zdll.exp      || goto failed
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlib1.dll          zlib1.dll     || goto failed
 
-        copy contrib\vstudio\${COMP}\x64\MiniUnzip%BUILD_CFG%\miniunz.exe     output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe    || goto failed 
-        copy contrib\vstudio\${COMP}\x64\%BUILD_CFG%\minizip.exe       output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe    || goto failed 
-        copy contrib\vstudio\${COMP}\x64\TestZlibDll%BUILD_CFG%\testzlib.exe  output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlib.exe   || goto failed 
-        copy contrib\vstudio\${COMP}\x64\TestZlib%BUILD_CFG%\testzlib.exe     output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe   || goto failed 
-        copy contrib\vstudio\${COMP}\x64\ZlibDll%BUILD_CFG%\zlibwapi.dll      output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll   || goto failed 
-        copy contrib\vstudio\${COMP}\x64\ZlibDll%BUILD_CFG%\zlibwapi.lib      output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib   || goto failed 
-        copy contrib\vstudio\${COMP}\x64\ZlibStat%BUILD_CFG%\zlibstat.lib     output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib   || goto failed 
-		copy example.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example.exe	|| goto failed 
-		copy minigzip.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip.exe	|| goto failed 
-		copy example_d.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example_d.exe	|| goto failed 
-		copy minigzip_d.exe	output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip_d.exe	|| goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\miniunz.exe        contrib\vstudio\${COMP}\x64\MiniUnzip%BUILD_CFG%\miniunz.exe        || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minizip.exe        contrib\vstudio\${COMP}\x64\%BUILD_CFG%\minizip.exe                 || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibdll.exe    contrib\vstudio\${COMP}\x64\TestZlibDll%BUILD_CFG%\testzlibdll.exe  || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\testzlibstatic.exe contrib\vstudio\${COMP}\x64\TestZlib%BUILD_CFG%\testzlib.exe        || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\zlibwapi.dll       contrib\vstudio\${COMP}\x64\ZlibDll%BUILD_CFG%\zlibwapi.dll         || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibwapi.lib       contrib\vstudio\${COMP}\x64\ZlibDll%BUILD_CFG%\zlibwapi.lib         || goto failed 
+        mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\lib\zlibstat.lib       contrib\vstudio\${COMP}\x64\ZlibStat%BUILD_CFG%\zlibstat.lib        || goto failed 
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example.exe	    example.exe	   || goto failed
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip.exe	    minigzip.exe   || goto failed
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\example_d.exe	    example_d.exe  || goto failed
+		mklink /H output\${COMP}\${OUTPUT_ARCH}\${BUILD_CFG}\bin\minigzip_d.exe	    minigzip_d.exe || goto failede
     ";
 
     clean-command:@"

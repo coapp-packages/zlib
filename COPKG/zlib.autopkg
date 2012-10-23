@@ -3,7 +3,7 @@
 @import "outercurve.inc";
 
 #define { 
-    flavor: "${flav??vc10}"; 
+    flavor: "${flav??vc11,vc10}"; 
     arch : "${arc??x86}";
 }
 
@@ -55,7 +55,7 @@ files[files-to-sign] {
 }
 
 provides {
-    feature: "compression.zlib" = "1.2.5";
+    feature: "compression.zlib" = "1.2.7";
 }
 
 metadata {
@@ -64,7 +64,7 @@ metadata {
     
     icon: @"zlib3d-b1.png";
     
-    author-version : "1.2.5";
+    author-version : "1.2.7";
     bug-tracker: "https://github.com/coapp-packages/zlib/issues";
     stability : "0";
     licenses : {
