@@ -7,11 +7,11 @@
 	original-source-location: "http://zlib.net/zlib125.zip";
 	original-source-website: "http://zlib.net";
 	license: "zlib license -- http://zlib.net/zlib_license.html";
-	packager: "garrett serack <garretts@microsoft.com>";
+	packager: "Ben Herila <ben@herila.net>, Garrett Serack <garretts@microsoft.com>";
 }
 
 test {
-    set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : COMP="${COMP??vc11, vc10}"; // suggested full list = "vc11, vc10, vc9, vc8, vc7.1, vc6, mingw";
     set : PLAT="${PLAT??x86, x64}";
 	default : false;
 	
@@ -52,7 +52,7 @@ test-loop {
 }
 
 package {
-    set : COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+    set : COMP="${COMP??vc11, vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
     set : PLAT="${PLAT??x86, x64}";
     default : false;
     
@@ -104,7 +104,7 @@ sign {
 release {
     set: { 
         BUILD_CFG ="release";
-        COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+        COMP="${COMP??vc11, vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
         PLAT="${PLAT??x86, x64}";
     };
     
@@ -132,7 +132,7 @@ debug {
     default : false;
     set: { 
         BUILD_CFG ="debug";
-        COMP="${COMP??vc10, vc9}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
+        COMP="${COMP??vc11,vc10}"; // suggested full list = "vc10, vc9, vc8, vc7.1, vc6, mingw";
         PLAT="${PLAT??x86, x64}";
     };
     
