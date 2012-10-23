@@ -15,7 +15,7 @@ metadata {
     
     icon: @"zlib3d-b1.png";
     
-    author-version : "1.2.5";
+    author-version : "1.2.7";
     bug-tracker: "https://github.com/coapp-packages/zlib/issues";
     stability : "0";
     licenses : {
