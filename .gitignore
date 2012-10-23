@@ -3,3 +3,11 @@
 *.obj
 *.user
 *.suo
+*.exe
+*.pdb
+*.lib
+*.dll
+*.res
+*.lastbuildstate
+*.tlog
+*.cod
