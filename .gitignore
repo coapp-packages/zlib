@@ -11,3 +11,13 @@
 *.lastbuildstate
 *.tlog
 *.cod
+*.lst
+*.cache
+*.sdf
+*.opensdf
+*.map
+*.exp
+Tmp
+*.ilk
+foo.gz
+*.idb
