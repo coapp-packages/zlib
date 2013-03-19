@@ -1,118 +1,128 @@
-@import "version.inc";
-@import "compat.inc";
-@import "outercurve.inc";
+@import template.autopkg;
+@import @"version.inc";
 
-#define { 
-    flavor: "${flav??vc10}"; 
-    arch : "${arc??x86}";
-}
+configurations {
+	Platform {
+		key : "Platform"; // ie, applies when Condition="$(Platform) == 'Win32'
+		choices: { Win32, x64, ARM };
+	};
 
-package {
-    name: "zlib[${flavor}]";
-    version: "${package-version}";
-    arch : "${arch}";
-    
-    display-name: "ZLib compression library";
-    location: "http://coapp.org/repository/${OutputFilename}";
+		Toolset { 
+			key : "PlatformToolset"; // ie, applies when Condition="$(PlatformToolset) == 'v110'
+			choices: { v110, v100 };
+		};
 
-    feed: "http://coapp.org/repository/packages.atom.xml";
-    publisher: "CoApp Project";
-}
-
-files[exes] {
-    root: @"..\output\${flavor}\${arch}\release\bin";
-    
-    include: {
-        "miniunz.exe",
-        "minizip.exe",
-    };
-    
-    trim-path: all;
+	Linkage {
+		// the first choice is the default
+		// so, unless a choice is made, it will assume the first choice
+		choices: { dynamic, stdcall, static };
+	}
 };
 
+nuget {
+	// the nuspec file metadata. Gets created/updated on build
+	nuspec {
+		id = zlib;
+		version : ${package-version};
+		title: ZLib compression library;
+		authors: "Jean-loup Gailly, Mark Adler";
+		owners: Garrett Serack;
+		licenseUrl: "http://zlib.net/zlib_license.html";
+		projectUrl: "http://github.com/coapp-packages/zlib";
+		iconUrl: "http://zlib.net/images/zlib3d-b1.png";
+		requireLicenseAcceptance:false;
+		summary:A zlib library;
+		description: @"A native zlib library.
+	zlib homepage:  http://zlib.net";
+		releaseNotes: "Release of zlib 1.2.7 libraries.";
+		copyright: Copyright 2013;
+		tags: { zlib, native,  };
 
-files[dlls] {
-    root: @"..\output\${flavor}\${arch}\release\bin";
-  
-    include: {
-        "zlibwapi.dll",
-        "zlib1.dll"
-    };
+		// .dependency { id : ...; version : ...; }
+		// .dependency { id : ...; version : ...; }
+		// .dependency { id : ...; version : ...; }
+
+	};
+
+	// the files that go into the content folders
+	// (inserted into the nuspec file)
+	files {
+		include: { .\output\include\*.h };
+
+		docs: {  .\output\docs\**\* };
     
-    trim-path: all;
-};
+		condition[Win32,v110,dynamic] { 
+			lib: { .\output\lib\x86\*.lib };
+		}
 
-license[zlib] {
-    license-url: "http://zlib.net/zlib_license.html";
-    license-type: "zlib";
+		condition[x64,v110,dynamic] {
+			lib: { .\output\lib\x64\*.lib };
+		}
+		
+		condition[Win32,v110,dynamic] {
+			bin: { .\output\bin\x86\zlib1.dll };
+		}
+
+		condition[Win32,v110,stdcall] {
+			bin: { .\output\bin\x86\zlibwapi.dll };
+		}
+
+		condition[x64,v110,dynamic] {
+			bin: { .\output\bin\x64\zlib1.dll };
+		}
+
+	};
+
+	// the VC++ .props file that gets generated and inserted into the ${d_content} folder
+	props { 
+		// we're going to generate a number of properties anyway. 
+        // so even if the packager doesn't specify the props object 
+        // we're going to make this file.
+	};
+
+	// the VC++ .targets file that gets generated and inserted into the ${d_content} folder
+	targets {
+		// every configuration needs to reference the include directories.
+		Includes += ${pkg_root}${d_include};
+
+		condition[Win32,v110,dynamic] { 
+			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
+		};
+
+		condition[x64,v110,dynamic] {
+			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
+		}
+
+		condition[v110,Win32,static] {
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
+			}
+
+			Libraries += ${pkg_root}${d_lib}\zlibstat.lib;
+		};
+
+		condition[Win32,v110,stdcall] {
+			Libraries += ${pkg_root}${d_lib}\zlibwapi.lib;
+		};
+
+		condition[x64,v110,static] {
+			Libraries += ${pkg_root}${d_lib}\zlibstat.lib;
+		};
+
+        // todo: the copy commands to copy the dlls into the build folder.
+
+		Target[AfterBuild] {
+			.Copy {
+				SourceFiles = ${pkg_root}${d_bin}\*;
+				DestinationFolder = $(TargetDir);
+				SkipUnchangedFiles=true;
+			}
+		};
+
+	};
 }
 
-files[files-to-sign] {
-    include: { 
-        exes,
-        dlls
-    };    
-}
-
-provides {
-    feature: "compression.zlib" = "1.2.5";
-}
-
-metadata {
-    summary: "The ZLib compression library";
-    description: @"zlib is designed to be a free, general-purpose, legally unencumbered -- that is, not covered by any patents -- lossless data-compression library for use on virtually any computer hardware and operating system. The zlib data format is itself portable across platforms. Unlike the LZW compression method used in Unix compress(1) and in the GIF image format, the compression method currently used in zlib essentially never expands the data. (LZW can double or triple the file size in extreme cases.) zlib's memory footprint is also independent of the input data and can be reduced, if necessary, at some cost in compression. A more precise, technical discussion of both points is available on another page."; // or path to a file...
-    
-    icon: @"zlib3d-b1.png";
-    
-    author-version : "1.2.5";
-    bug-tracker: "https://github.com/coapp-packages/zlib/issues";
-    stability : "0";
-    licenses : {
-        zlib
-    };
-}
-
-application {
-    include : {
-        exes
-    };
-}
-
-manifest[things-that-need-them] {
-    // all of our EXEs need to get the manifest entries for the assemblies we're creating in this package
-    
-    assembly : {
-        "zlib[${flavor}]"
-    };
-    
-    include : { 
-        exes
-    };
-}
-
-assembly[zlib[${flavor}]] {
-    include : {
-        dlls
-    };
-}
-
-package-composition {
-    symlinks : { 
-        exes => @"${bin}\${each.Name}" = @"${packagedir}\${each.Name}";
-    };
-}
-
-signing {
-    attributes : {
-        company="Outercurve Foundation",
-        description="${Package.PackageDetails.SummaryDescription}",
-        product-name="zlib",
-        product-version="${package-version}",
-        file-version="${package-version}",
-    };
-    
-    replace-signature: true; 
-    include: { 
-        files-to-sign
-    };    
-}
