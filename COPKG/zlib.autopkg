@@ -47,29 +47,66 @@ nuget {
 	// the files that go into the content folders
 	// (inserted into the nuspec file)
 	files {
-		include: { .\output\include\*.h };
+		include: { ..\zlib.h, ..\zconf.h };
 
-		docs: {  .\output\docs\**\* };
+		docs: {  ..\doc\**\* };
     
 		condition[Win32,v110,dynamic] { 
-			lib: { .\output\lib\x86\*.lib };
+			lib: { ..\output\vc11\x86\release\lib\zlib1.lib };
+			bin: { ..\output\vc11\x86\release\bin\zlib1.dll };
 		}
 
 		condition[x64,v110,dynamic] {
-			lib: { .\output\lib\x64\*.lib };
+			lib: { ..\output\vc11\x64\release\lib\zlib1.lib };
+			bin: { ..\output\vc11\x64\release\bin\zlib1.dll };
 		}
 		
-		condition[Win32,v110,dynamic] {
-			bin: { .\output\bin\x86\zlib1.dll };
+		condition[Win32,v110,static] {
+			lib: { ..\output\vc11\x86\release\lib\zlibstat.lib };
+		}
+
+		condition[x64,v110,static] {
+			lib: { ..\output\vc11\x64\release\lib\zlibstat.lib };
 		}
 
 		condition[Win32,v110,stdcall] {
-			bin: { .\output\bin\x86\zlibwapi.dll };
+			lib: { ..\output\vc11\x86\release\lib\zlibwapi.lib };
+			bin: { ..\output\vc11\x86\release\bin\zlibwapi.dll };
 		}
 
-		condition[x64,v110,dynamic] {
-			bin: { .\output\bin\x64\zlib1.dll };
+		condition[x64,v110,stdcall] {
+			lib: { ..\output\vc11\x64\release\lib\zlibwapi.lib };
+			bin: { ..\output\vc11\x64\release\bin\zlibwapi.dll };
 		}
+
+		condition[Win32,v100,dynamic] { 
+			lib: { ..\output\vc10\x86\release\lib\zlib1.lib };
+			bin: { ..\output\vc10\x86\release\bin\zlib1.dll };
+		}
+
+		condition[x64,v100,dynamic] {
+			lib: { ..\output\vc10\x64\release\lib\zlib1.lib };
+			bin: { ..\output\vc10\x64\release\bin\zlib1.dll };
+		}
+		
+		condition[Win32,v100,static] {
+			lib: { ..\output\vc10\x86\release\lib\zlibstat.lib };
+		}
+
+		condition[x64,v100,static] {
+			lib: { ..\output\vc10\x64\release\lib\zlibstat.lib };
+		}
+
+		condition[Win32,v100,stdcall] {
+			lib: { ..\output\vc10\x86\release\lib\zlibwapi.lib };
+			bin: { ..\output\vc10\x86\release\bin\zlibwapi.dll };
+		}
+
+		condition[x64,v100,stdcall] {
+			lib: { ..\output\vc10\x64\release\lib\zlibwapi.lib };
+			bin: { ..\output\vc10\x64\release\bin\zlibwapi.dll };
+		}
+
 
 	};
 
@@ -86,14 +123,6 @@ nuget {
 		Includes += ${pkg_root}${d_include};
 
 		condition[Win32,v110,dynamic] { 
-			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
-		};
-
-		condition[x64,v110,dynamic] {
-			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
-		}
-
-		condition[v110,Win32,static] {
 			Target[AfterBuild] {
 				.Copy {
 					SourceFiles = ${pkg_root}${d_bin}\*;
@@ -101,26 +130,100 @@ nuget {
 					SkipUnchangedFiles=true;
 				}
 			}
-
-			Libraries += ${pkg_root}${d_lib}\zlibstat.lib;
+			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
 		};
 
+		condition[x64,v110,dynamic] {
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
+			}
+			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
+		}
+
 		condition[Win32,v110,stdcall] {
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
+			}
 			Libraries += ${pkg_root}${d_lib}\zlibwapi.lib;
+		};
+
+		condition[x64,v110,stdcall] {
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
+			}
+			Libraries += ${pkg_root}${d_lib}\zlibwapi.lib;
+		};
+
+		condition[v110,Win32,static] {
+			Libraries += ${pkg_root}${d_lib}\zlibstat.lib;
 		};
 
 		condition[x64,v110,static] {
 			Libraries += ${pkg_root}${d_lib}\zlibstat.lib;
 		};
 
-        // todo: the copy commands to copy the dlls into the build folder.
-
-		Target[AfterBuild] {
-			.Copy {
-				SourceFiles = ${pkg_root}${d_bin}\*;
-				DestinationFolder = $(TargetDir);
-				SkipUnchangedFiles=true;
+		condition[Win32,v100,dynamic] { 
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
 			}
+			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
+		};
+
+		condition[x64,v100,dynamic] {
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
+			}
+			Libraries += ${pkg_root}${d_lib}\zlib1.lib;
+		}
+
+		condition[Win32,v100,stdcall] {
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
+			}
+			Libraries += ${pkg_root}${d_lib}\zlibwapi.lib;
+		};
+
+		condition[x64,v100,stdcall] {
+			Target[AfterBuild] {
+				.Copy {
+					SourceFiles = ${pkg_root}${d_bin}\*;
+					DestinationFolder = $(TargetDir);
+					SkipUnchangedFiles=true;
+				}
+			}
+			Libraries += ${pkg_root}${d_lib}\zlibwapi.lib;
+		};
+
+		condition[v100,Win32,static] {
+			Libraries += ${pkg_root}${d_lib}\zlibstat.lib;
+		};
+
+		condition[x64,v100,static] {
+			Libraries += ${pkg_root}${d_lib}\zlibstat.lib;
 		};
 
 	};
