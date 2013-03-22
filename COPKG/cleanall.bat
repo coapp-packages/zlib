@@ -1,3 +1,4 @@
+@echo off
 REM erase contrib\masmx86\inffas32.lst  > nul 2> nul
 REM erase contrib\masmx86\inffas32.obj  > nul 2> nul
 REM erase contrib\masmx86\match686.lst  > nul 2> nul

@@ -121,11 +121,12 @@ nuget {
 	targets {
 		// every configuration needs to reference the include directories.
 		Includes += ${pkg_root}${d_include};
+		ItemDefinitionGroup.ClCompile.AdditionalDefines += HAS_ZLIB;
 
 		condition[Win32,v110,dynamic] { 
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlib1.dll;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
@@ -136,7 +137,7 @@ nuget {
 		condition[x64,v110,dynamic] {
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlib1.dll;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
@@ -147,7 +148,7 @@ nuget {
 		condition[Win32,v110,stdcall] {
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlibwapi.lib;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
@@ -158,7 +159,7 @@ nuget {
 		condition[x64,v110,stdcall] {
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlibwapi.lib;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
@@ -177,7 +178,7 @@ nuget {
 		condition[Win32,v100,dynamic] { 
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlib1.dll;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
@@ -188,7 +189,7 @@ nuget {
 		condition[x64,v100,dynamic] {
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlib1.dll;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
@@ -199,7 +200,7 @@ nuget {
 		condition[Win32,v100,stdcall] {
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlibwapi.lib;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
@@ -210,7 +211,7 @@ nuget {
 		condition[x64,v100,stdcall] {
 			Target[AfterBuild] {
 				.Copy {
-					SourceFiles = ${pkg_root}${d_bin}\*;
+					SourceFiles = ${pkg_root}${d_bin}\zlibwapi.lib;
 					DestinationFolder = $(TargetDir);
 					SkipUnchangedFiles=true;
 				}
