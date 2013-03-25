@@ -1,17 +1,7 @@
-@import template.autopkg;
+@import basic.autopkg;
 @import @"version.inc";
 
 configurations {
-	Platform {
-		key : "Platform"; // ie, applies when Condition="$(Platform) == 'Win32'
-		choices: { Win32, x64, ARM };
-	};
-
-	Toolset { 
-		key : "PlatformToolset"; // ie, applies when Condition="$(PlatformToolset) == 'v110'
-		choices: { v110, v100 };
-	};
-
 	Linkage {
 		// the first choice is the default
 		// so, unless a choice is made, it will assume the first choice
@@ -25,8 +15,8 @@ nuget {
 		id = zlib;
 		version : ${package-version};
 		title: ZLib compression library;
-		authors: "Jean-loup Gailly, Mark Adler";
-		owners: Garrett Serack;
+		authors: {Jean-loup Gailly, Mark Adler, Garrett Serack, Tim Rogers};
+		owners: {CoApp Project, Garrett Serack};
 		licenseUrl: "http://zlib.net/zlib_license.html";
 		projectUrl: "http://github.com/coapp-packages/zlib";
 		iconUrl: "http://zlib.net/images/zlib3d-b1.png";
@@ -36,7 +26,7 @@ nuget {
 	zlib homepage:  http://zlib.net";
 		releaseNotes: "Release of zlib 1.2.7 libraries.";
 		copyright: Copyright 2013;
-		tags: { zlib, native,  };
+		tags: { zlib, native, CoApp };
 
 		// .dependency { id : ...; version : ...; }
 		// .dependency { id : ...; version : ...; }
