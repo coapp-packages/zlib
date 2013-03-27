@@ -28,10 +28,6 @@ nuget {
 		copyright: Copyright 2013;
 		tags: { zlib, native, CoApp };
 
-		// .dependency { id : ...; version : ...; }
-		// .dependency { id : ...; version : ...; }
-		// .dependency { id : ...; version : ...; }
-
 	};
 
 	// the files that go into the content folders
