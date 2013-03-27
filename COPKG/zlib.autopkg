@@ -111,7 +111,7 @@ nuget {
 	targets {
 		// every configuration needs to reference the include directories.
 		Includes += ${pkg_root}${d_include};
-		ItemDefinitionGroup.ClCompile.AdditionalDefines += HAS_ZLIB;
+		Defines += HAS_ZLIB;
 	};
 }
 
