@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="Info" DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{63BED288-E8C3-4345-B84D-2E64598DCF3A}</ProjectGuid>
+    <RootNamespace>zlib</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="ConfigurationSettings">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CallingConvention>cdecl</CallingConvention>
+  </PropertyGroup>
+  <Target Name="Info" BeforeTargets="Build">
+    <Message Text="  Configuration     :  '$(Configuration)'" />
+    <Message Text="  PlatformToolset   :  '$(PlatformToolset)'" />
+    <Message Text="  Platform          :  '$(Platform)'" />
+    <Message Text="  ConfigurationType :  '$(ConfigurationType)'" />
+    <Message Text="  CallingConvention :  '$(CallingConvention)'" />
+  </Target>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(CallingConvention)|$(ConfigurationType)'=='cdecl|DynamicLibrary'">
+    <OutName>zlib1</OutName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(CallingConvention)|$(ConfigurationType)'=='cdecl|StaticLibrary'">
+    <OutName>zlib_static</OutName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(CallingConvention)|$(ConfigurationType)'=='cdecl|ltcg'">
+    <OutName>zlib_static_ltcg</OutName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(CallingConvention)|$(ConfigurationType)'=='stdcall|DynamicLibrary'">
+    <OutName>zlib_stdcall</OutName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(CallingConvention)|$(ConfigurationType)'=='stdcall|StaticLibrary'">
+    <OutName>zlib_static_stdcall</OutName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(CallingConvention)|$(ConfigurationType)'=='stdcall|ltcg'">
+    <OutName>zlib_static_stdcall_ltcg</OutName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>..\..\Output\$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(PlatformToolset)\$(Platform)\$(Configuration)\$(ConfigurationType)\$(CallingConvention)\</IntDir>
+    <OutBinDir>$(OutDir)bin\</OutBinDir>
+    <OutLibDir>$(OutDir)lib\</OutLibDir>
+    <TargetName>lib\$(OutName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(CallingConvention)'=='stdcall'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(ConfigurationType)'=='DynamicLibrary'">ZLIB_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <CallingConvention Condition="'%(CallingConvention)'!='ltcg'">%(CallingConvention)</CallingConvention>
+      <CallingConvention Condition="'%(CallingConvention)'=='ltcg'">StaticLibrary</CallingConvention>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions Condition="'|'==''">/LTCG %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <BaseAddress>0x5A4C0000</BaseAddress>
+      <OutputFile>$(OutBinDir)$(OutName).dll</OutputFile>
+      <ProgramDatabaseFile>$(OutBinDir)$(OutName).pdb</ProgramDatabaseFile>
+      <ImportLibrary>$(OutLibDir)$(OutName).lib</ImportLibrary>
+      <ProfileGuidedDatabase>$(OutBinDir)$(OutName).pgd</ProfileGuidedDatabase>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;ASMV;ASMINF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;ASMV;ASMINF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:X64 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\adler32.c" />
+    <ClCompile Include="..\..\compress.c" />
+    <ClCompile Include="..\..\crc32.c" />
+    <ClCompile Include="..\..\deflate.c" />
+    <ClCompile Include="..\..\gzclose.c" />
+    <ClCompile Include="..\..\gzlib.c" />
+    <ClCompile Include="..\..\gzread.c" />
+    <ClCompile Include="..\..\gzwrite.c" />
+    <ClCompile Include="..\..\infback.c" />
+    <ClCompile Include="..\masmx64\inffas8664.c" Condition="'$(Platform)'=='x64'" />
+    <ClCompile Include="..\..\inffast.c" />
+    <ClCompile Include="..\..\inflate.c" />
+    <ClCompile Include="..\..\inftrees.c" />
+    <ClCompile Include="..\..\trees.c" />
+    <ClCompile Include="..\..\uncompr.c" />
+    <ClCompile Include="..\..\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\crc32.h" />
+    <ClInclude Include="..\..\deflate.h" />
+    <ClInclude Include="..\..\gzguts.h" />
+    <ClInclude Include="..\..\inffast.h" />
+    <ClInclude Include="..\..\inffixed.h" />
+    <ClInclude Include="..\..\inflate.h" />
+    <ClInclude Include="..\..\inftrees.h" />
+    <ClInclude Include="..\..\trees.h" />
+    <ClInclude Include="..\..\zconf.h" />
+    <ClInclude Include="..\..\zlib.h" />
+    <ClInclude Include="..\..\zutil.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\win32\zlib1.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\masmx64\gvmat64.asm" Condition="'$(Platform)'=='x64'">
+      <AssembledCodeListingFile>$(IntDir)gvmat64.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+      <ObjectFileName>$(IntDir)gvmat64.obj</ObjectFileName>
+    </MASM>
+    <MASM Include="..\masmx64\inffasx64.asm" Condition="'$(Platform)'=='x64'">
+      <AssembledCodeListingFile>$(IntDir)inffasx64.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+      <ObjectFileName>$(IntDir)inffasx64.obj</ObjectFileName>
+    </MASM>
+    <MASM Include="..\masmx86\inffas32.asm" Condition="'$(Platform)'=='Win32'">
+      <AssembledCodeListingFile>$(IntDir)inffas32.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+	  <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
+      <AdditionalOptions>/coff %(AdditionalOptions)</AdditionalOptions>
+      <ObjectFileName>$(IntDir)inffas32.obj</ObjectFileName>
+    </MASM>
+    <MASM Include="..\masmx86\match686.asm" Condition="'$(Platform)'=='Win32'">
+      <AssembledCodeListingFile>$(IntDir)match686.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+	  <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
+      <AdditionalOptions>/coff %(AdditionalOptions)</AdditionalOptions>
+      <ObjectFileName>$(IntDir)match686.obj</ObjectFileName>
+    </MASM>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>
