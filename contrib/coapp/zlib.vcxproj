@@ -82,14 +82,17 @@
       <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(CallingConvention)'=='stdcall'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(ConfigurationType)'=='DynamicLibrary'">ZLIB_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Debug|DynamicLibrary'">MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Debug|StaticLibrary'">MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Release|DynamicLibrary'">MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Release|StaticLibrary'">MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <CallingConvention Condition="'%(CallingConvention)'!='ltcg'">%(CallingConvention)</CallingConvention>
-      <CallingConvention Condition="'%(CallingConvention)'=='ltcg'">StaticLibrary</CallingConvention>
+      <ConfigurationType Condition="'%(ConfigurationType)'!='ltcg'">%(ConfigurationType)</ConfigurationType>
+      <ConfigurationType Condition="'%(ConfigurationType)'=='ltcg'">StaticLibrary</ConfigurationType>
     </ClCompile>
     <Link>
-      <AdditionalOptions Condition="'|'==''">/LTCG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(ConfigurationType)'=='ltcg'">/LTCG %(AdditionalOptions)</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <BaseAddress>0x5A4C0000</BaseAddress>
       <OutputFile>$(OutBinDir)$(OutName).dll</OutputFile>

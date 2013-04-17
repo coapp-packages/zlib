@@ -38,76 +38,148 @@ nuget {
 
 		docs: {  ..\..\doc\**\* };
     
-		[Win32,v110,dynamic,cdecl] { 
-			lib: { ..\..\output\v110\win32\release\lib\zlib1.lib };
-			bin: { ..\..\output\v110\win32\release\bin\zlib1.dll };
+		[Win32,v110,dynamic,cdecl,debug] { 
+			lib: { ..\..\output\v110\win32\debug\lib\zlib1.lib };
+			bin: { ..\..\output\v110\win32\debug\bin\zlib1.dll, ..\..\output\v110\win32\debug\bin\zlib1.pdb };
 		}
 
-		[x64,v110,dynamic,cdecl] {
-			lib: { ..\..\output\v110\x64\release\lib\zlib1.lib };
-			bin: { ..\..\output\v110\x64\release\bin\zlib1.dll };
+		[x64,v110,dynamic,cdecl,debug] {
+			lib: { ..\..\output\v110\x64\debug\lib\zlib1.lib };
+			bin: { ..\..\output\v110\x64\debug\bin\zlib1.dll, ..\..\output\v110\x64\debug\bin\zlib1.pdb };
 		}
 		
-		[Win32,v110,static,cdecl] {
+		[Win32,v110,static,cdecl,debug] {
+			lib: { ..\..\output\v110\win32\debug\lib\zlib_static.lib };
+		}
+
+		[x64,v110,static,cdecl,debug] {
+			lib: { ..\..\output\v110\x64\debug\lib\zlib_static.lib };
+		}
+
+		[Win32,v110,static,stdcall,debug] {
+			lib: { ..\..\output\v110\win32\debug\lib\zlib_static_stdcall.lib };
+		}
+
+		[x64,v110,static,stdcall,debug] {
+			lib: { ..\..\output\v110\x64\debug\lib\zlib_static_stdcall.lib };
+		}
+
+		[Win32,v110,dynamic,stdcall,debug] {
+			lib: { ..\..\output\v110\win32\debug\lib\zlib_stdcall.lib };
+			bin: { ..\..\output\v110\win32\debug\bin\zlib_stdcall.dll, ..\..\output\v110\win32\debug\bin\zlib_stdcall.pdb };
+		}
+
+		[x64,v110,dynamic,stdcall,debug] {
+			lib: { ..\..\output\v110\x64\debug\lib\zlib_stdcall.lib };
+			bin: { ..\..\output\v110\x64\debug\bin\zlib_stdcall.dll, ..\..\output\v110\x64\debug\bin\zlib_stdcall.pdb };
+		}
+
+		[Win32,v100,dynamic,cdecl,debug] { 
+			lib: { ..\..\output\v100\win32\debug\lib\zlib1.lib };
+			bin: { ..\..\output\v100\win32\debug\bin\zlib1.dll, ..\..\output\v100\win32\debug\bin\zlib1.pdb };
+		}
+
+		[x64,v100,dynamic,cdecl,debug] {
+			lib: { ..\..\output\v100\x64\debug\lib\zlib1.lib };
+			bin: { ..\..\output\v100\x64\debug\bin\zlib1.dll, ..\..\output\v100\x64\debug\bin\zlib1.pdb };
+		}
+		
+		[Win32,v100,static,cdecl,debug] {
+			lib: { ..\..\output\v100\win32\debug\lib\zlib_static.lib };
+		}
+
+		[x64,v100,static,cdecl,debug] {
+			lib: { ..\..\output\v100\x64\debug\lib\zlib_static.lib };
+		}
+
+		[Win32,v100,static,stdcall,debug] {
+			lib: { ..\..\output\v100\win32\debug\lib\zlib_static_stdcall.lib };
+		}
+
+		[x64,v100,static,stdcall,debug] {
+			lib: { ..\..\output\v100\x64\debug\lib\zlib_static_stdcall.lib };
+		}
+
+		[Win32,v100,dynamic,stdcall,debug] {
+			lib: { ..\..\output\v100\win32\debug\lib\zlib_stdcall.lib };
+			bin: { ..\..\output\v100\win32\debug\bin\zlib_stdcall.dll, ..\..\output\v100\win32\debug\bin\zlib_stdcall.pdb };
+		}
+
+		[x64,v100,dynamic,stdcall,debug] {
+			lib: { ..\..\output\v100\x64\debug\lib\zlib_stdcall.lib };
+			bin: { ..\..\output\v100\x64\debug\bin\zlib_stdcall.dll, ..\..\output\v100\x64\debug\bin\zlib_stdcall.pdb };
+		}
+
+		[Win32,v110,dynamic,cdecl,release] { 
+			lib: { ..\..\output\v110\win32\release\lib\zlib1.lib };
+			bin: { ..\..\output\v110\win32\release\bin\zlib1.dll, ..\..\output\v110\win32\release\bin\zlib1.pdb };
+		}
+
+		[x64,v110,dynamic,cdecl,release] {
+			lib: { ..\..\output\v110\x64\release\lib\zlib1.lib };
+			bin: { ..\..\output\v110\x64\release\bin\zlib1.dll, ..\..\output\v110\x64\release\bin\zlib1.pdb };
+		}
+		
+		[Win32,v110,static,cdecl,release] {
 			lib: { ..\..\output\v110\win32\release\lib\zlib_static.lib };
 		}
 
-		[x64,v110,static,cdecl] {
+		[x64,v110,static,cdecl,release] {
 			lib: { ..\..\output\v110\x64\release\lib\zlib_static.lib };
 		}
 
-		[Win32,v110,static,stdcall] {
+		[Win32,v110,static,stdcall,release] {
 			lib: { ..\..\output\v110\win32\release\lib\zlib_static_stdcall.lib };
 		}
 
-		[x64,v110,static,stdcall] {
+		[x64,v110,static,stdcall,release] {
 			lib: { ..\..\output\v110\x64\release\lib\zlib_static_stdcall.lib };
 		}
 
-		[Win32,v110,dynamic,stdcall] {
+		[Win32,v110,dynamic,stdcall,release] {
 			lib: { ..\..\output\v110\win32\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v110\win32\release\bin\zlib_stdcall.dll };
+			bin: { ..\..\output\v110\win32\release\bin\zlib_stdcall.dll, ..\..\output\v110\win32\release\bin\zlib_stdcall.pdb };
 		}
 
-		[x64,v110,dynamic,stdcall] {
+		[x64,v110,dynamic,stdcall,release] {
 			lib: { ..\..\output\v110\x64\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v110\x64\release\bin\zlib_stdcall.dll };
+			bin: { ..\..\output\v110\x64\release\bin\zlib_stdcall.dll, ..\..\output\v110\x64\release\bin\zlib_stdcall.pdb };
 		}
 
-		[Win32,v100,dynamic,cdecl] { 
+		[Win32,v100,dynamic,cdecl,release] { 
 			lib: { ..\..\output\v100\win32\release\lib\zlib1.lib };
-			bin: { ..\..\output\v100\win32\release\bin\zlib1.dll };
+			bin: { ..\..\output\v100\win32\release\bin\zlib1.dll, ..\..\output\v100\win32\release\bin\zlib1.pdb };
 		}
 
-		[x64,v100,dynamic,cdecl] {
+		[x64,v100,dynamic,cdecl,release] {
 			lib: { ..\..\output\v100\x64\release\lib\zlib1.lib };
-			bin: { ..\..\output\v100\x64\release\bin\zlib1.dll };
+			bin: { ..\..\output\v100\x64\release\bin\zlib1.dll, ..\..\output\v100\x64\release\bin\zlib1.pdb };
 		}
 		
-		[Win32,v100,static,cdecl] {
+		[Win32,v100,static,cdecl,release] {
 			lib: { ..\..\output\v100\win32\release\lib\zlib_static.lib };
 		}
 
-		[x64,v100,static,cdecl] {
+		[x64,v100,static,cdecl,release] {
 			lib: { ..\..\output\v100\x64\release\lib\zlib_static.lib };
 		}
 
-		[Win32,v100,static,stdcall] {
+		[Win32,v100,static,stdcall,release] {
 			lib: { ..\..\output\v100\win32\release\lib\zlib_static_stdcall.lib };
 		}
 
-		[x64,v100,static,stdcall] {
+		[x64,v100,static,stdcall,release] {
 			lib: { ..\..\output\v100\x64\release\lib\zlib_static_stdcall.lib };
 		}
 
-		[Win32,v100,dynamic,stdcall] {
+		[Win32,v100,dynamic,stdcall,release] {
 			lib: { ..\..\output\v100\win32\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v100\win32\release\bin\zlib_stdcall.dll };
+			bin: { ..\..\output\v100\win32\release\bin\zlib_stdcall.dll, ..\..\output\v100\win32\release\bin\zlib_stdcall.pdb };
 		}
 
-		[x64,v100,dynamic,stdcall] {
+		[x64,v100,dynamic,stdcall,release] {
 			lib: { ..\..\output\v100\x64\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v100\x64\release\bin\zlib_stdcall.dll };
+			bin: { ..\..\output\v100\x64\release\bin\zlib_stdcall.dll, ..\..\output\v100\x64\release\bin\zlib_stdcall.pdb };
 		}
 
 
