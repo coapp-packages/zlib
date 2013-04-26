@@ -37,15 +37,47 @@ nuget {
 		include: { ..\..\zlib.h, ..\..\zconf.h };
 
 		docs: {  ..\..\doc\**\* };
-    
+        
+        source += {
+            "..\..\adler32.c",
+            "..\..\compress.c",
+            "..\..\crc32.c",
+            "..\..\deflate.c",
+            "..\..\gzclose.c",
+            "..\..\gzlib.c",
+            "..\..\gzread.c",
+            "..\..\gzwrite.c",
+            "..\..\infback.c",
+            "..\..\inffast.c",
+            "..\..\inflate.c",
+            "..\..\inftrees.c",
+            "..\..\trees.c",
+            "..\..\uncompr.c",
+            "..\..\zutil.c",
+            "..\..\crc32.h",
+            "..\..\deflate.h",
+            "..\..\gzguts.h",
+            "..\..\inffast.h",
+            "..\..\inffixed.h",
+            "..\..\inflate.h",
+            "..\..\inftrees.h",
+            "..\..\trees.h",
+            "..\..\zconf.h",
+            "..\..\zlib.h",
+            "..\..\zutil.h",
+            "..\masmx64\inffas8664.c"
+        };
+
 		[Win32,v110,dynamic,cdecl,debug] { 
 			lib: { ..\..\output\v110\win32\debug\lib\zlib1.lib };
-			bin: { ..\..\output\v110\win32\debug\bin\zlib1.dll, ..\..\output\v110\win32\debug\bin\zlib1.pdb };
+			bin: { ..\..\output\v110\win32\debug\bin\zlib1.dll };
+            symbols += { ..\..\output\v110\win32\debug\bin\zlib1.pdb };
 		}
 
 		[x64,v110,dynamic,cdecl,debug] {
 			lib: { ..\..\output\v110\x64\debug\lib\zlib1.lib };
-			bin: { ..\..\output\v110\x64\debug\bin\zlib1.dll, ..\..\output\v110\x64\debug\bin\zlib1.pdb };
+			bin: { ..\..\output\v110\x64\debug\bin\zlib1.dll };
+            symbols += { ..\..\output\v110\x64\debug\bin\zlib1.pdb };
 		}
 		
 		[Win32,v110,static,cdecl,debug] {
@@ -66,22 +98,26 @@ nuget {
 
 		[Win32,v110,dynamic,stdcall,debug] {
 			lib: { ..\..\output\v110\win32\debug\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v110\win32\debug\bin\zlib_stdcall.dll, ..\..\output\v110\win32\debug\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v110\win32\debug\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v110\win32\debug\bin\zlib_stdcall.pdb };
 		}
 
 		[x64,v110,dynamic,stdcall,debug] {
 			lib: { ..\..\output\v110\x64\debug\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v110\x64\debug\bin\zlib_stdcall.dll, ..\..\output\v110\x64\debug\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v110\x64\debug\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v110\x64\debug\bin\zlib_stdcall.pdb };
 		}
 
 		[Win32,v100,dynamic,cdecl,debug] { 
 			lib: { ..\..\output\v100\win32\debug\lib\zlib1.lib };
-			bin: { ..\..\output\v100\win32\debug\bin\zlib1.dll, ..\..\output\v100\win32\debug\bin\zlib1.pdb };
+			bin: { ..\..\output\v100\win32\debug\bin\zlib1.dll };
+            symbols += { ..\..\output\v100\win32\debug\bin\zlib1.pdb };
 		}
 
 		[x64,v100,dynamic,cdecl,debug] {
 			lib: { ..\..\output\v100\x64\debug\lib\zlib1.lib };
-			bin: { ..\..\output\v100\x64\debug\bin\zlib1.dll, ..\..\output\v100\x64\debug\bin\zlib1.pdb };
+			bin: { ..\..\output\v100\x64\debug\bin\zlib1.dll };
+            symbols += { ..\..\output\v100\x64\debug\bin\zlib1.pdb };
 		}
 		
 		[Win32,v100,static,cdecl,debug] {
@@ -102,22 +138,26 @@ nuget {
 
 		[Win32,v100,dynamic,stdcall,debug] {
 			lib: { ..\..\output\v100\win32\debug\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v100\win32\debug\bin\zlib_stdcall.dll, ..\..\output\v100\win32\debug\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v100\win32\debug\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v100\win32\debug\bin\zlib_stdcall.pdb };
 		}
 
 		[x64,v100,dynamic,stdcall,debug] {
 			lib: { ..\..\output\v100\x64\debug\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v100\x64\debug\bin\zlib_stdcall.dll, ..\..\output\v100\x64\debug\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v100\x64\debug\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v100\x64\debug\bin\zlib_stdcall.pdb };
 		}
 
 		[Win32,v110,dynamic,cdecl,release] { 
 			lib: { ..\..\output\v110\win32\release\lib\zlib1.lib };
-			bin: { ..\..\output\v110\win32\release\bin\zlib1.dll, ..\..\output\v110\win32\release\bin\zlib1.pdb };
+			bin: { ..\..\output\v110\win32\release\bin\zlib1.dll };
+            symbols += { ..\..\output\v110\win32\release\bin\zlib1.pdb };
 		}
 
 		[x64,v110,dynamic,cdecl,release] {
 			lib: { ..\..\output\v110\x64\release\lib\zlib1.lib };
-			bin: { ..\..\output\v110\x64\release\bin\zlib1.dll, ..\..\output\v110\x64\release\bin\zlib1.pdb };
+			bin: { ..\..\output\v110\x64\release\bin\zlib1.dll };
+            symbols += { ..\..\output\v110\x64\release\bin\zlib1.pdb };
 		}
 		
 		[Win32,v110,static,cdecl,release] {
@@ -138,22 +178,26 @@ nuget {
 
 		[Win32,v110,dynamic,stdcall,release] {
 			lib: { ..\..\output\v110\win32\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v110\win32\release\bin\zlib_stdcall.dll, ..\..\output\v110\win32\release\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v110\win32\release\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v110\win32\release\bin\zlib_stdcall.pdb };
 		}
 
 		[x64,v110,dynamic,stdcall,release] {
 			lib: { ..\..\output\v110\x64\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v110\x64\release\bin\zlib_stdcall.dll, ..\..\output\v110\x64\release\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v110\x64\release\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v110\x64\release\bin\zlib_stdcall.pdb };
 		}
 
 		[Win32,v100,dynamic,cdecl,release] { 
 			lib: { ..\..\output\v100\win32\release\lib\zlib1.lib };
-			bin: { ..\..\output\v100\win32\release\bin\zlib1.dll, ..\..\output\v100\win32\release\bin\zlib1.pdb };
+			bin: { ..\..\output\v100\win32\release\bin\zlib1.dll };
+            symbols += { ..\..\output\v100\win32\release\bin\zlib1.pdb };
 		}
 
 		[x64,v100,dynamic,cdecl,release] {
 			lib: { ..\..\output\v100\x64\release\lib\zlib1.lib };
-			bin: { ..\..\output\v100\x64\release\bin\zlib1.dll, ..\..\output\v100\x64\release\bin\zlib1.pdb };
+			bin: { ..\..\output\v100\x64\release\bin\zlib1.dll };
+            symbols += { ..\..\output\v100\x64\release\bin\zlib1.pdb };
 		}
 		
 		[Win32,v100,static,cdecl,release] {
@@ -174,12 +218,14 @@ nuget {
 
 		[Win32,v100,dynamic,stdcall,release] {
 			lib: { ..\..\output\v100\win32\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v100\win32\release\bin\zlib_stdcall.dll, ..\..\output\v100\win32\release\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v100\win32\release\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v100\win32\release\bin\zlib_stdcall.pdb };
 		}
 
 		[x64,v100,dynamic,stdcall,release] {
 			lib: { ..\..\output\v100\x64\release\lib\zlib_stdcall.lib };
-			bin: { ..\..\output\v100\x64\release\bin\zlib_stdcall.dll, ..\..\output\v100\x64\release\bin\zlib_stdcall.pdb };
+			bin: { ..\..\output\v100\x64\release\bin\zlib_stdcall.dll };
+            symbols += { ..\..\output\v100\x64\release\bin\zlib_stdcall.pdb };
 		}
 
 

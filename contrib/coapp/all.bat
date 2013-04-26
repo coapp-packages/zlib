@@ -30,7 +30,7 @@ call :build Win32 Release v100
 call :build Win32 Debug v100
 endlocal
 
-if "__NOCLEAN__"=="true" goto :eof
+if "%__NOCLEAN__%"=="true" goto :eof
 
 goto :clean
 
