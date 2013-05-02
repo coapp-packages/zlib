@@ -43,6 +43,5 @@ goto :eof
 
 :clean
 REM rd /s /q v90
-rd /s /q v100
-rd /s /q v110
+rd /s /q Intermediate
 
