@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project InitialTargets="Info" DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -29,13 +29,7 @@
     <PlatformToolset>v110</PlatformToolset>
     <CallingConvention>cdecl</CallingConvention>
   </PropertyGroup>
-  <Target Name="Info" BeforeTargets="Build">
-    <Message Text="  Configuration     :  '$(Configuration)'" />
-    <Message Text="  PlatformToolset   :  '$(PlatformToolset)'" />
-    <Message Text="  Platform          :  '$(Platform)'" />
-    <Message Text="  ConfigurationType :  '$(ConfigurationType)'" />
-    <Message Text="  CallingConvention :  '$(CallingConvention)'" />
-  </Target>
+  <Import Project="$(CoAppEtcDirectory)vcxproj.inc" Condition="Exists('$(CoAppEtcDirectory)vcxproj.inc')" />
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
@@ -55,56 +49,31 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <OutNameSuffix Condition="'$(CallingConvention)|$(ConfigurationType)'=='Cdecl|DynamicLibrary'">1</OutNameSuffix>
-    <OutNameSuffix Condition="'$(CallingConvention)|$(ConfigurationType)'=='Cdecl|StaticLibrary'">-static</OutNameSuffix>
-    <OutNameSuffix Condition="'$(CallingConvention)|$(ConfigurationType)'=='Cdecl|ltcg'">-static-ltcg</OutNameSuffix>
-    <OutNameSuffix Condition="'$(CallingConvention)|$(ConfigurationType)'=='stdcall|DynamicLibrary'">-stdcall</OutNameSuffix>
-    <OutNameSuffix Condition="'$(CallingConvention)|$(ConfigurationType)'=='stdcall|StaticLibrary'">-static-stdcall</OutNameSuffix>
-    <OutNameSuffix Condition="'$(CallingConvention)|$(ConfigurationType)'=='stdcall|ltcg'">-static-stdcall-ltcg</OutNameSuffix>
-    <OutName>$(ProjectName)$(OutNameSuffix)</OutName>
-    <ProjectRootDir Condition="'$(SolutionDir)' != ''">$(SolutionDir)</ProjectRootDir> 
-    <ProjectRootDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)..\..\</ProjectRootDir> 
-    <OutDir>$(ProjectRootDir)Output\$(PlatformToolset)\$(Platform)\$(Configuration)\$(ConfigurationType)\$(CallingConvention)\</OutDir> 
-    <IntDir>$(ProjectRootDir)Intermediate\$(PlatformToolset)\$(Platform)\$(Configuration)\$(ConfigurationType)\$(CallingConvention)\</IntDir>
-    <OutBinDir>$(OutDir)bin\</OutBinDir>
-    <OutLibDir>$(OutDir)lib\</OutLibDir>
-    <TargetName>lib\$(OutName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(CallingConvention)'=='stdcall'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(CallingConvention.ToLower())'=='stdcall'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(ConfigurationType)'=='DynamicLibrary'">ZLIB_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Debug|DynamicLibrary'">MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Debug|StaticLibrary'">MultiThreadedDebug</RuntimeLibrary>
-      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Release|DynamicLibrary'">MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeLibrary Condition="'$(Configuration)|$(ConfigurationType)'=='Release|StaticLibrary'">MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <ConfigurationType Condition="'%(ConfigurationType)'!='ltcg'">%(ConfigurationType)</ConfigurationType>
-      <ConfigurationType Condition="'%(ConfigurationType)'=='ltcg'">StaticLibrary</ConfigurationType>
+      <AdditionalIncludeDirectories>..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalOptions Condition="'$(ConfigurationType)'=='ltcg'">/LTCG %(AdditionalOptions)</AdditionalOptions>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <BaseAddress>0x5A4C0000</BaseAddress>
-      <OutputFile>$(OutBinDir)$(OutName).dll</OutputFile>
-      <ProgramDatabaseFile>$(OutBinDir)$(OutName).pdb</ProgramDatabaseFile>
-      <ImportLibrary>$(OutLibDir)$(OutName).lib</ImportLibrary>
-      <ProfileGuidedDatabase>$(OutBinDir)$(OutName).pgd</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;ASMV;ASMINF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(CallingConvention.ToLower())'!='stdcall'">ASMV;ASMINF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:X86 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;ASMV;ASMINF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -128,6 +97,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <MASM Include="..\masmx64\gvmat64.asm" Condition="'$(Platform)'=='x64'">
+      <AssembledCodeListingFile>$(IntDir)gvmat64.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+      <ObjectFileName>$(IntDir)gvmat64.obj</ObjectFileName>
+    </MASM>
+    <MASM Include="..\masmx64\inffasx64.asm" Condition="'$(Platform)'=='x64'">
+      <AssembledCodeListingFile>$(IntDir)inffasx64.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+      <ObjectFileName>$(IntDir)inffasx64.obj</ObjectFileName>
+    </MASM>
+    <MASM Include="..\masmx86\inffas32.asm" Condition="'$(Platform)'=='Win32' AND '$(CallingConvention.ToLower())'!='stdcall'">
+      <AssembledCodeListingFile>$(IntDir)inffas32.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+	  <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
+      <AdditionalOptions>/coff %(AdditionalOptions)</AdditionalOptions>
+      <ObjectFileName>$(IntDir)inffas32.obj</ObjectFileName>
+    </MASM>
+    <MASM Include="..\masmx86\match686.asm" Condition="'$(Platform)'=='Win32' AND '$(CallingConvention.ToLower())'!='stdcall'">
+      <AssembledCodeListingFile>$(IntDir)match686.lst</AssembledCodeListingFile>
+      <MASMBeforeTargets>Build</MASMBeforeTargets>
+	  <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
+      <AdditionalOptions>/coff %(AdditionalOptions)</AdditionalOptions>
+      <ObjectFileName>$(IntDir)match686.obj</ObjectFileName>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="..\..\adler32.c" />
     <ClCompile Include="..\..\compress.c" />
     <ClCompile Include="..\..\crc32.c" />
@@ -143,6 +138,14 @@
     <ClCompile Include="..\..\inftrees.c" />
     <ClCompile Include="..\..\trees.c" />
     <ClCompile Include="..\..\uncompr.c" />
+    <ClCompile Include="..\minizip\ioapi.c" />
+    <ClCompile Include="..\minizip\iowin32.c" />
+    <ClCompile Include="..\minizip\unzip.c">
+      <PreprocessorDefinitions Condition="$(Configuration.ToLower().IndexOf('debug'))==-1">ZLIB_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="..\minizip\zip.c">
+      <PreprocessorDefinitions Condition="$(Configuration.ToLower().IndexOf('debug'))==-1">ZLIB_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <ClCompile Include="..\..\zutil.c" />
   </ItemGroup>
   <ItemGroup>
@@ -160,32 +163,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\win32\zlib1.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="..\masmx64\gvmat64.asm" Condition="'$(Platform)'=='x64'">
-      <AssembledCodeListingFile>$(IntDir)gvmat64.lst</AssembledCodeListingFile>
-      <MASMBeforeTargets>Build</MASMBeforeTargets>
-      <ObjectFileName>$(IntDir)gvmat64.obj</ObjectFileName>
-    </MASM>
-    <MASM Include="..\masmx64\inffasx64.asm" Condition="'$(Platform)'=='x64'">
-      <AssembledCodeListingFile>$(IntDir)inffasx64.lst</AssembledCodeListingFile>
-      <MASMBeforeTargets>Build</MASMBeforeTargets>
-      <ObjectFileName>$(IntDir)inffasx64.obj</ObjectFileName>
-    </MASM>
-    <MASM Include="..\masmx86\inffas32.asm" Condition="'$(Platform)'=='Win32'">
-      <AssembledCodeListingFile>$(IntDir)inffas32.lst</AssembledCodeListingFile>
-      <MASMBeforeTargets>Build</MASMBeforeTargets>
-	  <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
-      <AdditionalOptions>/coff %(AdditionalOptions)</AdditionalOptions>
-      <ObjectFileName>$(IntDir)inffas32.obj</ObjectFileName>
-    </MASM>
-    <MASM Include="..\masmx86\match686.asm" Condition="'$(Platform)'=='Win32'">
-      <AssembledCodeListingFile>$(IntDir)match686.lst</AssembledCodeListingFile>
-      <MASMBeforeTargets>Build</MASMBeforeTargets>
-	  <UseSafeExceptionHandlers>true</UseSafeExceptionHandlers>
-      <AdditionalOptions>/coff %(AdditionalOptions)</AdditionalOptions>
-      <ObjectFileName>$(IntDir)match686.obj</ObjectFileName>
-    </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

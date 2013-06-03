@@ -65,168 +65,24 @@ nuget {
             "..\..\zconf.h",
             "..\..\zlib.h",
             "..\..\zutil.h",
-            "..\masmx64\inffas8664.c"
+            "..\masmx64\inffas8664.c",
+            "..\minizip\ioapi.c",
+            "..\minizip\iowin32.c",
+            "..\minizip\unzip.c",
+            "..\minizip\zip.c",
         };
-
-		[Win32,v110,dynamic,cdecl,debug] { 
-			lib: { .\output\v110\win32\debug\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v110\win32\debug\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v110\win32\debug\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-
-		[x64,v110,dynamic,cdecl,debug] {
-			lib: { .\output\v110\x64\debug\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v110\x64\debug\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v110\x64\debug\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-		
-		[Win32,v110,static,cdecl,debug] {
-			lib: { .\output\v110\Win32\Debug\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[x64,v110,static,cdecl,debug] {
-			lib: { .\output\v110\x64\debug\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[Win32,v110,static,stdcall,debug] {
-			lib: { .\output\v110\win32\debug\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[x64,v110,static,stdcall,debug] {
-			lib: { .\output\v110\x64\debug\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[Win32,v110,dynamic,stdcall,debug] {
-			lib: { .\output\v110\win32\debug\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v110\win32\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v110\win32\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
-
-		[x64,v110,dynamic,stdcall,debug] {
-			lib: { .\output\v110\x64\debug\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v110\x64\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v110\x64\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
-
-		[Win32,v100,dynamic,cdecl,debug] { 
-			lib: { .\output\v100\win32\debug\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v100\win32\debug\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v100\win32\debug\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-
-		[x64,v100,dynamic,cdecl,debug] {
-			lib: { .\output\v100\x64\debug\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v100\x64\debug\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v100\x64\debug\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-		
-		[Win32,v100,static,cdecl,debug] {
-			lib: { .\output\v100\win32\debug\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[x64,v100,static,cdecl,debug] {
-			lib: { .\output\v100\x64\debug\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[Win32,v100,static,stdcall,debug] {
-			lib: { .\output\v100\win32\debug\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[x64,v100,static,stdcall,debug] {
-			lib: { .\output\v100\x64\debug\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[Win32,v100,dynamic,stdcall,debug] {
-			lib: { .\output\v100\win32\debug\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v100\win32\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v100\win32\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
-
-		[x64,v100,dynamic,stdcall,debug] {
-			lib: { .\output\v100\x64\debug\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v100\x64\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v100\x64\debug\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
-
-		[Win32,v110,dynamic,cdecl,release] { 
-			lib: { .\output\v110\win32\release\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v110\win32\release\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v110\win32\release\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-
-		[x64,v110,dynamic,cdecl,release] {
-			lib: { .\output\v110\x64\release\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v110\x64\release\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v110\x64\release\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-		
-		[Win32,v110,static,cdecl,release] {
-			lib: { .\output\v110\win32\release\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[x64,v110,static,cdecl,release] {
-			lib: { .\output\v110\x64\release\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[Win32,v110,static,stdcall,release] {
-			lib: { .\output\v110\win32\release\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[x64,v110,static,stdcall,release] {
-			lib: { .\output\v110\x64\release\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[Win32,v110,dynamic,stdcall,release] {
-			lib: { .\output\v110\win32\release\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v110\win32\release\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v110\win32\release\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
-
-		[x64,v110,dynamic,stdcall,release] {
-			lib: { .\output\v110\x64\release\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v110\x64\release\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v110\x64\release\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
-
-		[Win32,v100,dynamic,cdecl,release] { 
-			lib: { .\output\v100\win32\release\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v100\win32\release\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v100\win32\release\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-
-		[x64,v100,dynamic,cdecl,release] {
-			lib: { .\output\v100\x64\release\DynamicLibrary\cdecl\lib\zlib1.lib };
-			bin: { .\output\v100\x64\release\DynamicLibrary\cdecl\bin\zlib1.dll };
-            symbols += { .\output\v100\x64\release\DynamicLibrary\cdecl\bin\zlib1.pdb };
-		}
-		
-		[Win32,v100,static,cdecl,release] {
-			lib: { .\output\v100\win32\release\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[x64,v100,static,cdecl,release] {
-			lib: { .\output\v100\x64\release\StaticLibrary\cdecl\lib\zlib-static.lib };
-		}
-
-		[Win32,v100,static,stdcall,release] {
-			lib: { .\output\v100\win32\release\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[x64,v100,static,stdcall,release] {
-			lib: { .\output\v100\x64\release\StaticLibrary\stdcall\lib\zlib-static-stdcall.lib };
-		}
-
-		[Win32,v100,dynamic,stdcall,release] {
-			lib: { .\output\v100\win32\release\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v100\win32\release\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v100\win32\release\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
-
-		[x64,v100,dynamic,stdcall,release] {
-			lib: { .\output\v100\x64\release\DynamicLibrary\stdcall\lib\zlib-stdcall.lib };
-			bin: { .\output\v100\x64\release\DynamicLibrary\stdcall\bin\zlib-stdcall.dll };
-            symbols += { .\output\v100\x64\release\DynamicLibrary\stdcall\bin\zlib-stdcall.pdb };
-		}
+		("v100,v110", "Win32,x64", "release,debug", "Dynamic", "cdecl,stdcall") => {
+			[${0},${1},${2},${3},${4}] {
+				lib:     { .\output\${0}\${1}\${2}\${3}\${4}\lib\*.lib };
+				bin:     { .\output\${0}\${1}\${2}\${3}\${4}\lib\*.dll };
+				symbols: { .\output\${0}\${1}\${2}\${3}\${4}\lib\*.pdb };
+			};
+		};
+		("v100,v110", "Win32,x64", "release,debug", "Static,ltcg", "cdecl,stdcall") => {
+			[${0},${1},${2},${3},${4}] {
+				lib:     { .\output\${0}\${1}\${2}\${3}\${4}\lib\*.lib };
+			};
+		};
 
 	};
 
@@ -239,8 +95,6 @@ nuget {
 
 	// the VC++ .targets file that gets generated and inserted into the ${d_content} folder
 	targets {
-		// every configuration needs to reference the include directories.
-		Includes += ${pkg_root}${d_include};
 		Defines += HAS_ZLIB;
 		[dynamic]
 			Defines += ZLIB_DLL;
