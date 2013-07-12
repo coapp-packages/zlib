@@ -18,7 +18,7 @@ nuget {
 		summary:A zlib library;
 		description: @"A native zlib library.
 	zlib homepage:  http://zlib.net";
-		releaseNotes: "Release of zlib 1.2.7 libraries.";
+		releaseNotes: "Release of zlib 1.2.8 libraries.";
 		copyright: Copyright 2013;
 		tags: { zlib, native, CoApp };
 
