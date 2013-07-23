@@ -1,0 +1,3 @@
+contrib/coapp/Output
+contrib/coapp/Intermediate
+*.nupkg

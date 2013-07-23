@@ -1,31 +1,31 @@
 @import default_tools;
 
+#define {
+    ProjectName = "zlib";
+    ProjectFiles : {
+		zlib.vcxproj
+    }; 
+};
+
 default {
-
-	("v110, v100", "Win32, x64", "Debug,Release", "Dynamic, Static, ltcg", "cdecl,stdcall") => {
-		.PushEnvironment {};
-		.LoadSystemEnvironment {};
-        .SetEnvironmentFromTarget.Target = "VC_${0}_${1}";
-		.Message.Text = @"
-
-
-        Env:        ${0}-${1}  :  ${2}  ${3}  ${4}
-        EnvExists:  $(IsEnvironmentValid)";
-        
-        .Exec {
-            Condition="$(IsEnvironmentValid)";
-            Command = @"msbuild $(MSBuildThisFileDirectory)zlib.vcxproj /p:PlatformToolset=${0};Platform=${1};Configuration=${2};UsesConfigurationType=${3};CallingConvention=${4}";
+    (PlatformToolsets, Architectures, ReleaseOrDebug, Linkage, "cdecl,stdcall" ) => {
+        .MsBuildEx {
+            MaxThreads = $(MaxThreads);
+            LoadEnvironmentFromTargets = VC_${0}_${1};
+            StartMessage = @"Environment vc_${0}_${1} -- ${2}  ${3} ";
+            Properties:  {
+				PlatformToolset=${0};
+				Platform=${1};
+				Configuration=${2};
+				UsesConfigurationType=${3};
+				CallingConvention=${4}
+			};
+			
+            Projects=${ProjectFiles};
         };
-        
-        .PopEnvironment{};
-	};
-	
+    };
+    
+    // wait for all threaded tasks to finish.
+    .WaitForTasks { };
 };
 
-clean {
-    .RemoveDir.Directories = @"$(MSBuildThisFileDirectory).\intermediate";
-};
-
-nuke {
-    .RemoveDir.Directories = @"$(MSBuildThisFileDirectory).\output";
-};

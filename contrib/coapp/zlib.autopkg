@@ -79,13 +79,6 @@ nuget {
 
 	};
 
-	// the VC++ .props file that gets generated and inserted into the ${d_content} folder
-	props { 
-		// we're going to generate a number of properties anyway. 
-        // so even if the packager doesn't specify the props object 
-        // we're going to make this file.
-	};
-
 	// the VC++ .targets file that gets generated and inserted into the ${d_content} folder
 	targets {
 		Defines += HAS_ZLIB;
