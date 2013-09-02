@@ -64,14 +64,14 @@ nuget {
             "..\minizip\unzip.c",
             "..\minizip\zip.c",
         };
-		("v100,v110", "Win32,x64", "release,debug", "Dynamic", "cdecl,stdcall") => {
+		("v100,v110", "Win32,x64,ARM", "release,debug", "Dynamic", "cdecl,stdcall") => {
 			[${0},${1},${2},${3},${4}] {
 				lib:     { .\output\${0}\${1}\${2}\${3}\${4}\*.lib };
 				bin:     { .\output\${0}\${1}\${2}\${3}\${4}\*.dll };
 				symbols: { .\output\${0}\${1}\${2}\${3}\${4}\*.pdb };
 			};
 		};
-		("v100,v110", "Win32,x64", "release,debug", "Static,ltcg", "cdecl,stdcall") => {
+		("v100,v110", "Win32,x64,ARM", "release,debug", "Static,ltcg", "cdecl,stdcall") => {
 			[${0},${1},${2},${3},${4}] {
 				lib:     { .\output\${0}\${1}\${2}\${3}\${4}\*.lib };
 			};
