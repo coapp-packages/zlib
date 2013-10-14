@@ -8,17 +8,39 @@
 };
 
 default {
-    (PlatformToolsets, Architectures, ReleaseOrDebug, Linkage, "cdecl,stdcall" ) => {
+    ("V100", Architectures, ReleaseOrDebug, Linkage, "cdecl,stdcall", "MultiByte, Unicode", "Desktop", "NoASM") => {
         .MsBuildEx {
             MaxThreads = $(MaxThreads);
             LoadEnvironmentFromTargets = VC_${0}_${1};
-            StartMessage = @"Environment vc_${0}_${1} -- ${2}  ${3} ";
+            StartMessage = @"Environment vc_${0}_${1} -- ${2} : ${3} : ${4} : ${5} : ${6} : ${7}";
             Properties:  {
 				PlatformToolset=${0};
 				Platform=${1};
 				Configuration=${2};
 				UsesConfigurationType=${3};
-				CallingConvention=${4}
+				CallingConvention=${4};
+				CharacterSet=${5};
+				AppContainer=${6};
+				UseASM=${7};
+			};
+			
+            Projects=${ProjectFiles};
+        };
+    };
+    ("V110,V120", Architectures, ReleaseOrDebug, Linkage, "cdecl,stdcall", "MultiByte, Unicode", "App, Desktop","NoASM") => {
+        .MsBuildEx {
+            MaxThreads = $(MaxThreads);
+            LoadEnvironmentFromTargets = VC_${0}_${1};
+            StartMessage = @"Environment vc_${0}_${1} -- ${2} : ${3} : ${4} : ${5} : ${6} : ${7}";
+            Properties:  {
+				PlatformToolset=${0};
+				Platform=${1};
+				Configuration=${2};
+				UsesConfigurationType=${3};
+				CallingConvention=${4};
+				CharacterSet=${5};
+				AppContainer=${6};
+				UseASM=${7};
 			};
 			
             Projects=${ProjectFiles};
