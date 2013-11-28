@@ -27,7 +27,7 @@ default {
             Projects=${ProjectFiles};
         };
     };
-    ("V110,V120", Architectures, ReleaseOrDebug, Linkage, "cdecl,stdcall", "MultiByte, Unicode", "App, Desktop","NoASM") => {
+    ("V110,V120", "Win32,x64,ARM", ReleaseOrDebug, Linkage, "cdecl,stdcall", "MultiByte, Unicode", "App, Desktop","NoASM") => {
         .MsBuildEx {
             MaxThreads = $(MaxThreads);
             LoadEnvironmentFromTargets = VC_${0}_${1};
